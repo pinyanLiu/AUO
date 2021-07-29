@@ -8,7 +8,7 @@ cmake_minimum_required(VERSION 3.10)
  endif()
 
  # Set variables
- set(PROJECT_NAME k10_stage1)
+ set(PROJECT_NAME Hems)
  set(PROJECT_LANGUAGE C CXX)
 
  # Environment variables
@@ -28,38 +28,16 @@ cmake_minimum_required(VERSION 3.10)
  set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
  # Dependences paths
- set(DEPS_PATHS
-     ${CMAKE_CURRENT_SOURCE_DIR}/deps/Wheel_Server/lib/wclt
-     ${CMAKE_CURRENT_SOURCE_DIR}/deps/3wheel_ctrl/lib
-     ${CMAKE_CURRENT_SOURCE_DIR}/deps/conio/src
-     ${CMAKE_CURRENT_SOURCE_DIR}/deps/Camera/lib
-     ${CMAKE_CURRENT_SOURCE_DIR}/deps/camera_server/lib
-     ${CMAKE_CURRENT_SOURCE_DIR}/deps/helper/lib
-     ${CMAKE_CURRENT_SOURCE_DIR}/deps/SocketHelper/
-     ${CMAKE_CURRENT_SOURCE_DIR}/deps/Socket/
-     ${CMAKE_CURRENT_SOURCE_DIR}/deps/kproto/lib
-     ${CMAKE_CURRENT_SOURCE_DIR}/deps/tcpmgr/lib
-     ${CMAKE_CURRENT_SOURCE_DIR}/deps/args/lib
-     ${CMAKE_CURRENT_SOURCE_DIR}/deps/Wheel/src
-     ${CMAKE_CURRENT_SOURCE_DIR}/deps/k10_arm_lib/lib
-     ${CMAKE_CURRENT_SOURCE_DIR}/deps/dynamixel_lib/lib
-     ${CMAKE_CURRENT_SOURCE_DIR}/deps/SimplePID/src
-     ${CMAKE_CURRENT_SOURCE_DIR}/deps/karm_server_dynamixel/lib/karm_client
-
-
-     )
+# set(DEPS_PATHS
+ #    ${CMAKE_CURRENT_SOURCE_DIR}/deps/Wheel_Server/lib/wclt
+ #    )
 
  # Library paths
  set(LIB_PATHS
-     ${CMAKE_CURRENT_SOURCE_DIR}/lib/ltproc
-     ${CMAKE_CURRENT_SOURCE_DIR}/lib/yoloClient
-     ${CMAKE_CURRENT_SOURCE_DIR}/lib/laserClient
-     ${CMAKE_CURRENT_SOURCE_DIR}/lib/qtrClient
-     ${CMAKE_CURRENT_SOURCE_DIR}/lib/SensorModel
-     ${CMAKE_CURRENT_SOURCE_DIR}/lib/PlanModel
-     ${CMAKE_CURRENT_SOURCE_DIR}/lib/ActModel
-     ${CMAKE_CURRENT_SOURCE_DIR}/lib/Process
-     ${CMAKE_CURRENT_SOURCE_DIR}/lib/wheelClient
+     ${CMAKE_CURRENT_SOURCE_DIR}/lib/import
+     ${CMAKE_CURRENT_SOURCE_DIR}/lib/optimization
+     ${CMAKE_CURRENT_SOURCE_DIR}/lib/output
+
      )
 
  # Utility paths
@@ -75,6 +53,6 @@ cmake_minimum_required(VERSION 3.10)
  project(${PROJECT_NAME} ${PROJECT_LANGUAGE})
 
  # Include cmake files
- include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/deps.cmake)
+ #include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/deps.cmake)
  include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/lib.cmake)
  include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/util.cmake)

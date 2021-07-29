@@ -4,11 +4,13 @@
 #include <time.h>
 #include <glpk.h>
 #include <math.h>
-#include <mysql.h>
+#include <import.hpp>
+#include <optimization.hpp>
+#include <output.hpp>
 #include <iostream>
-#include "SQLFunction.hpp"
+//#include "SQLFunction.hpp"
 // use function 'find_variableName_position' needs
-#include "scheduling_parameter.hpp"
+//#include "scheduling_parameter.hpp"
 #include <string>
 #include <vector>
 #include <algorithm>

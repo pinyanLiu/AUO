@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.10)
 
 # Set variables
-set(PROJECT_NAME act)
+set(PROJECT_NAME import)
 set(PROJECT_LANGUAGE C CXX)
-set(PROJECT_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/act.h)
+set(PROJECT_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/import.hpp)
 set(PROJECT_DEPS gcc stdc++)
 
 # Compile setting

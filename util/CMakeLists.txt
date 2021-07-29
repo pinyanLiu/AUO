@@ -3,13 +3,8 @@ cmake_minimum_required(VERSION 3.10)
 # Set variables
 set(PROJECT_NAME k10_stage1)
 set(PROJECT_LANGUAGE C CXX)
-set(PROJECT_DEPS process act plan sensor yoloClient laserClient qtrClient
-    wclt kproto SPID Camera camera_client helper ltproc conio SocketHelper Socket 3wheel pthread karm_client karm
-  dynamixel_lib
-  ${DYNAMIXEL_LIBRARIES}
-    ${Poco_LIBRARIES}
-    ${Fuzzylite_LIBRARIES} ${SERIALPORT_LIBRARIES} ${DARKNET_LIBRARIES} ${OpenCV_LIBS}
-    ${AVCODEC_LIBRARY} ${AVFORMAT_LIBRARY} ${AVUTIL_LIBRARY} ${SWSCALE_LIBRARY}
+set(PROJECT_DEPS input optimization output 
+  ${GLPKLIBRARIES}
     )
 
 # Compile setting
