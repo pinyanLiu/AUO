@@ -5,6 +5,8 @@
 #include <string.h>
 #include <iostream>
 #include <vector>
+#include <mysql++.h>
+
 
 class IMPORT
 {
