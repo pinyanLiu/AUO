@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.10)
 
 # Set variables
-set(PROJECT_NAME k10_stage1)
+set(PROJECT_NAME Hems)
 set(PROJECT_LANGUAGE C CXX)
-set(PROJECT_DEPS input optimization output 
+set(PROJECT_DEPS import optimization output 
   ${GLPKLIBRARIES}
     )
 

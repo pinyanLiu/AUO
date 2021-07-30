@@ -8,7 +8,7 @@ cmake_minimum_required(VERSION 3.10)
  endif()
 
  # Set variables
- set(PROJECT_NAME Hems)
+ set(PROJECT_NAME Hems_lib)
  set(PROJECT_LANGUAGE C CXX)
 
  # Environment variables
