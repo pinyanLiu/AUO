@@ -27,7 +27,7 @@ private:
       int Global_next_simulate_timeblock;
       std::string simulate_price;
         
-    }Experimental_parameters;
+    }EXPERIMENTAL_PARAMETERS;
     
 typedef struct 
 {
@@ -47,6 +47,11 @@ std::vector<float> price;
 
 public:
     IMPORT();
+    get_experimental_parameters();
+    get_plan_flag();
+    get_load_model();
+    get_price();
+
     ~IMPORT();
 };
 
