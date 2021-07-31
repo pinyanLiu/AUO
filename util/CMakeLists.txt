@@ -3,8 +3,9 @@ cmake_minimum_required(VERSION 3.10)
 # Set variables
 set(PROJECT_NAME Hems)
 set(PROJECT_LANGUAGE C CXX)
-set(PROJECT_DEPS import optimization output 
-  ${GLPKLIBRARIES}
+set(PROJECT_DEPS import optimization output mysqlclient
+  ${GLPK_LIBRARIES}
+  ${MYSQLCLIENT_LIBRARIES}
     )
 
 # Compile setting
