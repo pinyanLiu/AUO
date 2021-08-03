@@ -15,6 +15,7 @@ include_directories(${MYSQL_INCLUDE_DIRS})
 find_package(Glpk REQUIRED)
 include_directories($GLPK_INCLUDE_DIRS})
 
+
 # Add subdirectory
 foreach(DEPS_PATH ${DEPS_PATHS})
 add_subdirectory(${DEPS_PATH})

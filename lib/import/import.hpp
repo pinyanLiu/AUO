@@ -6,6 +6,7 @@
 #include <iostream>
 #include <vector>
 #include <mysql.h>
+//#include <mysql++.h>
 
 
 class IMPORT
@@ -53,8 +54,11 @@ public:
     get_plan_flag();
     get_load_model();
     get_price();
-
+    
     ~IMPORT();
+private:
+    get_data_from_mysql();
+
 };
 
 #endif
