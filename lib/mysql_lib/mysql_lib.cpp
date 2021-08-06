@@ -1,6 +1,6 @@
-#include "import.hpp"
+#include "mysql_lib.hpp"
 
-IMPORT::IMPORT(const std::string ip,const std::string name,const std::string passwd,const std::string database)
+MYSQL_LIB::MYSQL_LIB(const std::string ip,const std::string name,const std::string passwd,const std::string database)
 {
 	server_ip=ip;
     user_name=name;
@@ -20,7 +20,7 @@ IMPORT::IMPORT(const std::string ip,const std::string name,const std::string pas
     }
 }
 
-IMPORT::~IMPORT()
+MYSQL_LIB::~MYSQL_LIB()
 {
 	//釋放儲存結果
     //mysql_free_result(mysql_res);
@@ -30,7 +30,48 @@ IMPORT::~IMPORT()
 
 }
 
-IMPORT::EXPERIMENTAL_PARAMETERS IMPORT::get_experimental_parameters()
+bool MYSQL_LIB::operate(const std::string &operation)
+{
+     if(mysql_query(mysql_conn,operation.c_str()))
+    {
+        std::cout<<"mysql操作失敗"<<std::endl;
+        return false;
+    }
+    //將操作結果儲存在結果集  
+    mysql_res=mysql_use_result(mysql_conn);
+    return true;
+}
+
+MYSQL_ROW  MYSQL_LIB::getRow(void)
+{
+    return mysql_fetch_row(mysql_res);
+}
+
+int MYSQL_LIB::getColNum(void)
+{
+    return mysql_num_fields(mysql_res);
+}
+void MYSQL_LIB::print_result(void)
+{
+    //獲得每行的欄位數
+    int num=mysql_num_fields(mysql_res);
+    //迴圈讀取所有的行
+    while((mysql_row=mysql_fetch_row(mysql_res))!=NULL){
+        //將每行欄位都讀出來.
+        for(int i=0;i<num;i++){
+            std::cout << mysql_row[i]<<" "<<i;
+        }
+        std::cout << std::endl;
+    }
+}
+void MYSQL_LIB::free_result(void)   
+{
+	mysql_free_result(mysql_res);
+}
+
+//-----------class import in mysql----------------
+
+MYSQL_LIB::IMPORT::EXPERIMENTAL_PARAMETERS MYSQL_LIB::IMPORT::get_experimental_parameters()
 {
 	EXPERIMENTAL_PARAMETERS EP;
 	operate("SELECT value FROM AUO_BaseParameter WHERE parameter_name = 'time_block'");
@@ -101,7 +142,7 @@ IMPORT::EXPERIMENTAL_PARAMETERS IMPORT::get_experimental_parameters()
 	return EP;
 }
 
-IMPORT::PLAN_FLAG IMPORT::get_plan_flag()
+MYSQL_LIB::IMPORT::PLAN_FLAG MYSQL_LIB::IMPORT::get_plan_flag()
 {
 	PLAN_FLAG PF;
 	operate("SELECT flag FROM AUO_flag WHERE variable_name = 'Pgrid'");
@@ -152,51 +193,12 @@ IMPORT::PLAN_FLAG IMPORT::get_plan_flag()
 	return PF;
 }
 /*
-void IMPORT::get_load_model()
+void MYSQL_LIB::IMPORT::get_load_model()
 {
 
 }
-void IMPORT::get_price()
+void MYSQL_LIB::IMPORT::get_price()
 {
 
 }
 */
-bool IMPORT::operate(const std::string &operation)
-{
-     if(mysql_query(mysql_conn,operation.c_str()))
-    {
-        std::cout<<"mysql操作失敗"<<std::endl;
-        return false;
-    }
-    //將操作結果儲存在結果集  
-    mysql_res=mysql_use_result(mysql_conn);
-    return true;
-}
-
-MYSQL_ROW  IMPORT::getRow(void)
-{
-    return mysql_fetch_row(mysql_res);
-}
-
-int IMPORT::getColNum(void)
-{
-    return mysql_num_fields(mysql_res);
-}
-void IMPORT::print_result(void)
-{
-    //獲得每行的欄位數
-    int num=mysql_num_fields(mysql_res);
-    //迴圈讀取所有的行
-    while((mysql_row=mysql_fetch_row(mysql_res))!=NULL){
-        //將每行欄位都讀出來.
-        for(int i=0;i<num;i++){
-            std::cout << mysql_row[i]<<" "<<i;
-        }
-        std::cout << std::endl;
-    }
-}
-void IMPORT::free_result(void)   
-{
-	mysql_free_result(mysql_res);
-}
-
