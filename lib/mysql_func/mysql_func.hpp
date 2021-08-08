@@ -45,8 +45,9 @@ class MYSQL_FUNC
         PLAN_FLAG pf;//pf for PLAN_FLAG
      public:
         MYSQL_FUNC(std::string iP, std::string name, std::string passwd, std::string database);
-        EXPERIMENTAL_PARAMETERS get_experimental_parameters();
-        PLAN_FLAG get_plan_flag();
+       // EXPERIMENTAL_PARAMETERS get_experimental_parameters();
+        void get_experimental_parameters();
+        void get_plan_flag();
         void get_load_model(std::vector<float> LD);//LD for loadmodel
         void get_price(std::vector<float> PRICE);//PRICE for .......PRICE
         //對資料庫進行sql操作
