@@ -20,6 +20,7 @@ MYSQL_LIB::MYSQL_LIB(const std::string ip,const std::string name,const std::stri
     }
 }
 
+
 MYSQL_LIB::~MYSQL_LIB()
 {
 	//釋放儲存結果
@@ -70,19 +71,24 @@ void MYSQL_LIB::free_result(void)
 }
 
 //-----------class import in mysql----------------
+MYSQL_FUNC::MYSQL_FUNC(std::string iP, std::string name, std::string passwd, std::string database)
+{
+	mysql_lib = new MYSQL_LIB(iP,name,passwd,database);
 
-MYSQL_LIB::IMPORT::EXPERIMENTAL_PARAMETERS MYSQL_LIB::IMPORT::get_experimental_parameters()
+}
+
+MYSQL_FUNC::EXPERIMENTAL_PARAMETERS MYSQL_FUNC::get_experimental_parameters()
 {
 	EXPERIMENTAL_PARAMETERS EP;
-	operate("SELECT value FROM AUO_BaseParameter WHERE parameter_name = 'time_block'");
-	mysql_row = getRow();
+	mysql_lib->operate("SELECT value FROM AUO_BaseParameter WHERE parameter_name = 'time_block'");
+	mysql_lib->mysql_row = mysql_lib->getRow();
 	EP.time_block = atoi(mysql_row[0]);
-	free_result();
+	mysql_lib->free_result();
 
-	operate("SELECT value FROM AUO_BaseParameter WHERE parameter_name = 'Vess*Cess'");
-	mysql_row = getRow();
-	EP.vess_cess = atoi(mysql_row[0]);
-	free_result();
+	mysql_lib->operate("SELECT value FROM AUO_BaseParameter WHERE parameter_name = 'Vess*Cess'");
+	mysql_lib->mysql_row = mysql_lib->getRow();
+	EP.vess_cess = atoi(mysql_lib->mysql_row[0]);
+	mysql_lib->free_result();
 
 	operate("SELECT value FROM AUO_BaseParameter WHERE parameter_name = 'SOCmin'");
 	mysql_row = getRow();
@@ -142,7 +148,7 @@ MYSQL_LIB::IMPORT::EXPERIMENTAL_PARAMETERS MYSQL_LIB::IMPORT::get_experimental_p
 	return EP;
 }
 
-MYSQL_LIB::IMPORT::PLAN_FLAG MYSQL_LIB::IMPORT::get_plan_flag()
+MYSQL_FUNC::PLAN_FLAG MYSQL_FUNC::get_plan_flag()
 {
 	PLAN_FLAG PF;
 	operate("SELECT flag FROM AUO_flag WHERE variable_name = 'Pgrid'");
@@ -193,11 +199,11 @@ MYSQL_LIB::IMPORT::PLAN_FLAG MYSQL_LIB::IMPORT::get_plan_flag()
 	return PF;
 }
 /*
-void MYSQL_LIB::IMPORT::get_load_model()
+void MYSQL_FUNC::get_load_model()
 {
 
 }
-void MYSQL_LIB::IMPORT::get_price()
+void MYSQL_FUNC::get_price()
 {
 
 }
