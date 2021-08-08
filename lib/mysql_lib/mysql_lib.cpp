@@ -70,141 +70,67 @@ void MYSQL_LIB::free_result(void)
 	mysql_free_result(mysql_res);
 }
 
-//-----------class import in mysql----------------
-MYSQL_FUNC::MYSQL_FUNC(std::string iP, std::string name, std::string passwd, std::string database)
+float MYSQL_LIB::getRow_and_atof(void)
 {
-	mysql_lib = new MYSQL_LIB(iP,name,passwd,database);
-
+	mysql_row = getRow();
+	float result = atof(mysql_row[0]);
+	free_result();
+	return result;
 }
 
-MYSQL_FUNC::EXPERIMENTAL_PARAMETERS MYSQL_FUNC::get_experimental_parameters()
+float* MYSQL_LIB::getArray_and_atof(void)
 {
-	EXPERIMENTAL_PARAMETERS EP;
-	mysql_lib->operate("SELECT value FROM AUO_BaseParameter WHERE parameter_name = 'time_block'");
-	mysql_lib->mysql_row = mysql_lib->getRow();
-	EP.time_block = atoi(mysql_row[0]);
-	mysql_lib->free_result();
-
-	mysql_lib->operate("SELECT value FROM AUO_BaseParameter WHERE parameter_name = 'Vess*Cess'");
-	mysql_lib->mysql_row = mysql_lib->getRow();
-	EP.vess_cess = atoi(mysql_lib->mysql_row[0]);
-	mysql_lib->free_result();
-
-	operate("SELECT value FROM AUO_BaseParameter WHERE parameter_name = 'SOCmin'");
-	mysql_row = getRow();
-	EP.SOC_min = atof(mysql_row[0]);
+	int colNum = getColNum();
+	float *result = new float[colNum];
+	while((mysql_row = getRow()) != NULL) {
+        
+		for(int i = 0; i < colNum; i++)
+			result[i] = atof(mysql_row[i]);
+    }
 	free_result();
-
-	operate("SELECT value FROM AUO_BaseParameter WHERE parameter_name = 'SOCmax'");
-	mysql_row = getRow();
-	EP.SOC_max = atof(mysql_row[0]);
-	free_result();
-
-	operate("SELECT value FROM AUO_BaseParameter WHERE parameter_name = 'SOCthres'");
-	mysql_row = getRow();
-	EP.SOC_threshold = atof(mysql_row[0]);
-	free_result();
-
-	operate("SELECT value FROM AUO_BaseParameter WHERE parameter_name = 'ini_SOC'");
-	mysql_row = getRow();
-	EP.ini_SOC = atof(mysql_row[0]);
-	free_result();
-
-	operate("SELECT value FROM AUO_BaseParameter WHERE parameter_name = 'now_SOC'");
-	mysql_row = getRow();
-	EP.now_SOC = atof(mysql_row[0]);
-	free_result();
-
-	operate("SELECT value FROM AUO_BaseParameter WHERE parameter_name = 'Pbatmin'");
-	mysql_row = getRow();
-	EP.P_bat_min = atoi(mysql_row[0]);
-	free_result();
-
-	operate("SELECT value FROM AUO_BaseParameter WHERE parameter_name = 'Pbatmax'");
-	mysql_row = getRow();
-	EP.P_bat_max = atoi(mysql_row[0]);
-	free_result();
-
-	operate("SELECT value FROM AUO_BaseParameter WHERE parameter_name = 'Pgridmax'");
-	mysql_row = getRow();
-	EP.P_grid_max = atoi(mysql_row[0]);
-	free_result();
-
-	operate("SELECT value FROM AUO_BaseParameter WHERE parameter_name = 'real_time'");
-	mysql_row = getRow();
-	EP.realtime = atoi(mysql_row[0]);
-	free_result();
-
-	operate("SELECT value FROM AUO_BaseParameter WHERE parameter_name = 'Global_next_simulate_timeblock'");
-	mysql_row = getRow();
-	EP.Global_next_simulate_timeblock = atoi(mysql_row[0]);
-	free_result();
-
-
-	operate("SELECT value FROM AUO_BaseParameter WHERE parameter_name = 'simulate_price'");
-	mysql_row = getRow();
-	EP.simulate_price = mysql_row[0];
-	free_result();
-	return EP;
+	return result;
 }
 
-MYSQL_FUNC::PLAN_FLAG MYSQL_FUNC::get_plan_flag()
+int MYSQL_LIB::getRow_and_atoi(void)
 {
-	PLAN_FLAG PF;
-	operate("SELECT flag FROM AUO_flag WHERE variable_name = 'Pgrid'");
 	mysql_row = getRow();
-	PF.Pgrid = bool(mysql_row[0]);
+	int result = atoi(mysql_row[0]);
 	free_result();
-
-	operate("SELECT flag FROM AUO_flag WHERE variable_name = 'mu_grid'");
-	mysql_row = getRow();
-	PF.mu_grid = mysql_row[0];
-
-	free_result();
-
-	operate("SELECT flag FROM AUO_flag WHERE variable_name = 'Psell'");
-	mysql_row = getRow();
-	PF.Psell = (mysql_row[0]);
-	free_result();
-
-	operate("SELECT flag FROM AUO_flag WHERE variable_name = 'Pess'");
-	mysql_row = getRow();
-	PF.Pess = (mysql_row[0]);
-	free_result();
-
-	operate("SELECT flag FROM AUO_flag WHERE variable_name = 'SOC'");
-	mysql_row = getRow();
-	PF.SOC = (mysql_row[0]);
-	free_result();
-
-	operate("SELECT flag FROM AUO_flag WHERE variable_name = 'SOC_change'");
-	mysql_row = getRow();
-	PF.SOC_change = (mysql_row[0]);
-	free_result();
-
-
-	operate("SELECT flag FROM AUO_flag WHERE variable_name = 'Pfc'");
-	mysql_row = getRow();
-	PF.Pfc = (mysql_row[0]);
-	free_result();
-
-
-	operate("SELECT flag FROM AUO_flag WHERE variable_name = 'muFC'");
-	mysql_row = getRow();
-	PF.mu_fc = (mysql_row[0]);
-
-	free_result();
-
-
-	return PF;
+	return result;
 }
-/*
-void MYSQL_FUNC::get_load_model()
+
+int* MYSQL_LIB::getArray_and_atoi(void)
+{	
+	int colNum = getColNum();
+	int *result = new int[colNum];
+	while((mysql_row = getRow()) != NULL) {
+        
+        for(int i = 0; i < colNum; i++)
+			result[i] = atoi(mysql_row[i]);
+    }
+	free_result();
+	
+	return result;
+}
+
+std::string MYSQL_LIB::getRow_string(void) //without turning type
 {
-
+	mysql_row = getRow();
+	std::string result = mysql_row[0];
+	free_result();
+	return result;
 }
-void MYSQL_FUNC::get_price()
-{
 
+std::string* MYSQL_LIB::getArray_string(void) //without turning type
+{	
+	int colNum = getColNum();
+	std::string *result = new std::string[colNum];
+	while((mysql_row = getRow()) != NULL) {
+        
+        for(int i = 0; i < colNum; i++)
+			result[i] = mysql_row[i];
+    }
+	free_result();
+	
+	return result;
 }
-*/
