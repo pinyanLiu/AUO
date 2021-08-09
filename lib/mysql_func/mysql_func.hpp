@@ -39,7 +39,7 @@ class MYSQL_FUNC
             bool Pfc;
             bool mu_fc;
         }PLAN_FLAG;
-        std::vector<float> load_model;
+        std::vector<int> load_model;
         std::vector<float> price;
         EXPERIMENTAL_PARAMETERS ep;//ep for EXPERIMENTAL_PARAMETERS
         PLAN_FLAG pf;//pf for PLAN_FLAG
@@ -48,8 +48,8 @@ class MYSQL_FUNC
        // EXPERIMENTAL_PARAMETERS get_experimental_parameters();
         void get_experimental_parameters();
         void get_plan_flag();
-        void get_load_model(std::vector<float> LD);//LD for loadmodel
-        void get_price(std::vector<float> PRICE);//PRICE for .......PRICE
+        void get_load_model();//LD for loadmodel
+        void get_price();//PRICE for .......PRICE
         //對資料庫進行sql操作
         
         ~MYSQL_FUNC();

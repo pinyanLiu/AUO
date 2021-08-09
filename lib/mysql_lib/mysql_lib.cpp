@@ -78,16 +78,20 @@ float MYSQL_LIB::getRow_and_atof(void)
 	return result;
 }
 
-float* MYSQL_LIB::getArray_and_atof(void)
+std::vector<float> MYSQL_LIB::getArray_and_atof(void)
 {
-	int colNum = getColNum();
-	float *result = new float[colNum];
-	while((mysql_row = getRow()) != NULL) {
-        
-		for(int i = 0; i < colNum; i++)
-			result[i] = atof(mysql_row[i]);
+	//獲得每行的欄位數
+    int num=mysql_num_fields(mysql_res);
+    std::vector<float> result ;
+    //迴圈讀取所有的行
+    while((mysql_row=mysql_fetch_row(mysql_res))!=NULL){
+        //將每行欄位都寫入result陣列.
+        for(int i=0;i<num;i++){
+			result.push_back(atof(mysql_row[i]));
+        }
     }
 	free_result();
+	
 	return result;
 }
 
@@ -99,14 +103,17 @@ int MYSQL_LIB::getRow_and_atoi(void)
 	return result;
 }
 
-int* MYSQL_LIB::getArray_and_atoi(void)
+std::vector<int> MYSQL_LIB::getArray_and_atoi(void)
 {	
-	int colNum = getColNum();
-	int *result = new int[colNum];
-	while((mysql_row = getRow()) != NULL) {
-        
-        for(int i = 0; i < colNum; i++)
-			result[i] = atoi(mysql_row[i]);
+ //獲得每行的欄位數
+    int num=mysql_num_fields(mysql_res);
+    std::vector<int> result ;
+    //迴圈讀取所有的行
+    while((mysql_row=mysql_fetch_row(mysql_res))!=NULL){
+        //將每行欄位都寫入result陣列
+        for(int i=0;i<num;i++){
+			result.push_back(atoi(mysql_row[i]));
+        }
     }
 	free_result();
 	
@@ -121,14 +128,17 @@ std::string MYSQL_LIB::getRow_string(void) //without turning type
 	return result;
 }
 
-std::string* MYSQL_LIB::getArray_string(void) //without turning type
+std::vector<std::string> MYSQL_LIB::getArray_string(void) //without turning type
 {	
-	int colNum = getColNum();
-	std::string *result = new std::string[colNum];
-	while((mysql_row = getRow()) != NULL) {
-        
-        for(int i = 0; i < colNum; i++)
-			result[i] = mysql_row[i];
+	//獲得每行的欄位數
+    int num=mysql_num_fields(mysql_res);
+    std::vector<std::string> result ;
+    //迴圈讀取所有的行
+    while((mysql_row=mysql_fetch_row(mysql_res))!=NULL){
+        //將每行欄位都寫入result陣列.
+        for(int i=0;i<num;i++){
+			result.push_back(mysql_row[i]);
+        }
     }
 	free_result();
 	

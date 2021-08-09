@@ -18,14 +18,13 @@ class MYSQL_LIB
         //獲取行
         MYSQL_ROW getRow(void);
         int   getColNum(void);   //得到每行的列數.
-        void  freeResult(void);  //
         void  print_result(void);  //列印查詢結果
+        int   getRow_and_atoi(void);
+        std::vector<int> getArray_and_atoi(void);
         float getRow_and_atof(void);
-        float* getArray_and_atof(void);
-        int getRow_and_atoi(void);
-        int* getArray_and_atoi(void);
+        std::vector<float> getArray_and_atof(void);
         std::string getRow_string(void); //without turning type
-        std::string* getArray_string(void); //without turning type
+        std::vector<std::string> getArray_string(void); //without turning type
 
         void  free_result(void);    //清除result暫存空間
         ~MYSQL_LIB();

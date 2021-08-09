@@ -73,11 +73,11 @@ void MYSQL_FUNC::get_plan_flag()
 	mysql_lib->operate("SELECT flag FROM AUO_flag WHERE variable_name = 'muFC'");
 	this->pf.mu_fc = mysql_lib->getRow_and_atoi();
 }
-/*
+
 void MYSQL_FUNC::get_load_model()
 {
-
-
+	mysql_lib->operate("SELECT powerConsumption FROM AUO_history_energyConsumption WHERE id <= '96'");
+	this->load_model = mysql_lib->getArray_and_atoi();
 }
 /*
 void MYSQL_FUNC::get_price()
