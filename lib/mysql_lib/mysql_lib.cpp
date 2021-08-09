@@ -144,3 +144,16 @@ std::vector<std::string> MYSQL_LIB::getArray_string(void) //without turning type
 	
 	return result;
 }
+
+bool MYSQL_LIB::setBuffer_and_operate(char* command)
+{
+    snprintf(mysql_buffer, sizeof(mysql_buffer), command );
+         if(mysql_query(mysql_conn,mysql_buffer))
+    {
+        std::cout<<"mysql操作失敗"<<std::endl;
+        return false;
+    }
+    //將操作結果儲存在結果集  
+    mysql_res=mysql_use_result(mysql_conn);
+    return true;
+}

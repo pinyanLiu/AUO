@@ -3,8 +3,9 @@ using namespace std;
 int main(){
 
 MYSQL_FUNC mysql_func("140.124.42.65","root", "fuzzy314", "chig");
-/*
+
 mysql_func.get_experimental_parameters();
+/*
 //testing
 cout<<"realtime = "<<mysql_func.ep.real_time<<endl;
 cout<<"ini_SOC = "<<mysql_func.ep.ini_SOC<<endl;
@@ -29,13 +30,18 @@ cout<<"mu_fc = "<<mysql_func.pf.mu_fc<<endl;
 cout<<"mu_gird = "<<mysql_func.pf.mu_grid<<endl;
 cout<<"Pess = "<<mysql_func.pf.Pess<<endl;
 cout<<"Pfc = "<<mysql_func.pf.Pfc<<endl;
-*/
+
 mysql_func.get_load_model();
 	for (size_t i = 0; i < mysql_func.load_model.size(); i++)
 	{
 		printf("load_model[%d] = %d\n",i,mysql_func.load_model[i]);
 	}
-
+*/
+mysql_func.get_price();
+	for (size_t i = 0; i < mysql_func.price.size(); i++)
+	{
+		printf("price[%d] = %f\n",i,mysql_func.price[i]);
+	}
 
 return 0;
 }

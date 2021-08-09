@@ -25,7 +25,7 @@ class MYSQL_LIB
         std::vector<float> getArray_and_atof(void);
         std::string getRow_string(void); //without turning type
         std::vector<std::string> getArray_string(void); //without turning type
-
+        bool setBuffer_and_operate(char* command);
         void  free_result(void);    //清除result暫存空間
         ~MYSQL_LIB();
     private:

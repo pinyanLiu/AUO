@@ -79,12 +79,13 @@ void MYSQL_FUNC::get_load_model()
 	mysql_lib->operate("SELECT powerConsumption FROM AUO_history_energyConsumption WHERE id <= '96'");
 	this->load_model = mysql_lib->getArray_and_atoi();
 }
-/*
+
 void MYSQL_FUNC::get_price()
 {
-
+	mysql_lib->operate( "SELECT "+this->ep.simulate_price+" FROM price WHERE price_period <= "+std::to_string(this->ep.time_block));
+	this->price = mysql_lib->getArray_and_atof();
 }
-*/
+
 
 MYSQL_FUNC::~MYSQL_FUNC()
 {
