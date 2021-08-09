@@ -1,3 +1,6 @@
+//--------------------------------------
+// This lib is the base command of mysql
+//--------------------------------------
 #ifndef __MYSQL_LIB_HPP__
 #define __MYSQL_LIB_HPP__
 #include <stdio.h>

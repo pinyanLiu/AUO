@@ -1,3 +1,7 @@
+//-------------------------------------------
+//This lib is the commands based on mysql_lib
+//-------------------------------------------
+
 #ifndef __MYSQL_FUNC_HPP__
 #define __MYSQL_FUNC_HPP__
 #include <stdio.h>
