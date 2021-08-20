@@ -1,11 +1,19 @@
 #include "optimization.hpp"
 
-OPTIMIZE::OPTIMIZE(/* args */)
+OPTIMIZE::OPTIMIZE(char* prob_name,char* extremum)
 {
+	mip = glp_create_prob();
+	glp_set_prob_name(mip, prob_name);
+	if(extremum == "max" || extremum == "MAX")
+		glp_set_obj_dir(mip, GLP_MAX);
+	else if (extremum == "min" || extremum == "MIN")
+		glp_set_obj_dir(mip, GLP_MIN);
+
 }
 
 OPTIMIZE::~OPTIMIZE()
 {
+	glp_delete_prob(mip);
 }
 
 void OPTIMIZE::set_variable_name(MYSQL_FUNC::PLAN_FLAG pf)

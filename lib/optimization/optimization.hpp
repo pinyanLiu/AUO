@@ -13,10 +13,13 @@ private:
     glp_prob* mip;
     int num_of_variable;
 public:
-    OPTIMIZE(/* args */);
+    std::vector<std::string> variable_name;
+
+
+
+    OPTIMIZE(char* prob_name,char* extremum);
     ~OPTIMIZE();
-        std::vector<std::string> variable_name;
-    void set_variable_name(MYSQL_FUNC::PLAN_FLAG pf);
+    void set_variable_name(MYSQL_FUNC::PLAN_FLAG pf);//push variable under each situation
     int  cal_var_num();
     void set_obj(MYSQL_FUNC::PLAN_FLAG pf);//set objective function
     void set_constraint_matrix(MYSQL_FUNC::PLAN_FLAG pf);//set whole row
