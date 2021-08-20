@@ -49,28 +49,28 @@ void MYSQL_FUNC::get_experimental_parameters()
 
 void MYSQL_FUNC::get_plan_flag()
 {
-	mysql_lib->operate("SELECT flag FROM AUO_flag WHERE variable_name = 'Pgrid'");
+	mysql_lib->operate("SELECT flag FROM GHEMS_flag WHERE variable_name = 'Pgrid'");
 	this->pf.Pgrid = mysql_lib->getRow_and_atoi();
 
-	mysql_lib->operate("SELECT flag FROM AUO_flag WHERE variable_name = 'PV'");
+	mysql_lib->operate("SELECT flag FROM GHEMS_flag WHERE variable_name = 'PV'");
 	this->pf.PV = mysql_lib->getRow_and_atoi();
 
-	mysql_lib->operate("SELECT flag FROM AUO_flag WHERE variable_name = 'FC'");
+	mysql_lib->operate("SELECT flag FROM GHEMS_flag WHERE variable_name = 'FC'");
 	this->pf.FC = mysql_lib->getRow_and_atoi();
 
-	mysql_lib->operate("SELECT flag FROM AUO_flag WHERE variable_name = 'Pess'");
+	mysql_lib->operate("SELECT flag FROM GHEMS_flag WHERE variable_name = 'Pess'");
 	this->pf.Pess = mysql_lib->getRow_and_atoi();
 
-	mysql_lib->operate("SELECT flag FROM AUO_flag WHERE variable_name = 'Sell'");
+	mysql_lib->operate("SELECT flag FROM GHEMS_flag WHERE variable_name = 'Sell'");
 	this->pf.Sell = mysql_lib->getRow_and_atoi();
 
-	mysql_lib->operate("SELECT flag FROM AUO_flag WHERE variable_name = 'SOC_change'");
+	mysql_lib->operate("SELECT flag FROM GHEMS_flag WHERE variable_name = 'SOC_change'");
 	this->pf.SOC_change = mysql_lib->getRow_and_atoi();
 
-	mysql_lib->operate("SELECT flag FROM AUO_flag WHERE variable_name = 'DR'");
+	mysql_lib->operate("SELECT flag FROM GHEMS_flag WHERE variable_name = 'DR'");
 	this->pf.DR = mysql_lib->getRow_and_atoi();
 
-	mysql_lib->operate("SELECT flag FROM AUO_flag WHERE variable_name = 'Comfort'");
+	mysql_lib->operate("SELECT flag FROM GHEMS_flag WHERE variable_name = 'Comfort'");
 	this->pf.Comfort = mysql_lib->getRow_and_atoi();
 }
 

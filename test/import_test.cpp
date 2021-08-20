@@ -1,13 +1,14 @@
 #include "mysql_func.hpp"
 #include "optimization.hpp"
+#define DEBUG
 using namespace std;
 int main(){
 
-MYSQL_FUNC mysql_func("140.124.42.65","root", "fuzzy314", "chig");
+MYSQL_FUNC mysql_func("140.124.42.65","root", "fuzzy314", "Hems_lib");
 
 mysql_func.get_experimental_parameters();
-/*
-//testing
+
+#ifdef DEBUG
 cout<<"realtime = "<<mysql_func.ep.real_time<<endl;
 cout<<"ini_SOC = "<<mysql_func.ep.ini_SOC<<endl;
 cout<<"now_SOC = "<<mysql_func.ep.now_SOC<<endl;
@@ -20,24 +21,25 @@ cout<<"SOC_min = "<<mysql_func.ep.SOC_min<<endl;
 cout<<"SOC_threshold = "<<mysql_func.ep.SOC_threshold<<endl;
 cout<<"time_block = "<<mysql_func.ep.time_block<<endl;
 cout<<"vess_cess = "<<mysql_func.ep.vess_cess<<endl;
-
+#endif
 mysql_func.get_plan_flag();
 
+#ifdef DEBUG
 cout<<"Pgrid = "<<mysql_func.pf.Pgrid<<endl;
-cout<<"Psell = "<<mysql_func.pf.Psell<<endl;
-cout<<"SOC = "<<mysql_func.pf.SOC<<endl;
-cout<<"SOC change = "<<mysql_func.pf.SOC_change<<endl;
-cout<<"mu_fc = "<<mysql_func.pf.mu_fc<<endl;
-cout<<"mu_gird = "<<mysql_func.pf.mu_grid<<endl;
+cout<<"Psell = "<<mysql_func.pf.Sell<<endl;
 cout<<"Pess = "<<mysql_func.pf.Pess<<endl;
-cout<<"Pfc = "<<mysql_func.pf.Pfc<<endl;
+cout<<"SOC change = "<<mysql_func.pf.SOC_change<<endl;
+cout<<"FC = "<<mysql_func.pf.FC<<endl;
+cout<<"DR = "<<mysql_func.pf.DR<<endl;
+cout<<"Comfort = "<<mysql_func.pf.Comfort<<endl;
+cout<<"PV = "<<mysql_func.pf.PV<<endl;
+#endif
 
 mysql_func.get_load_model();
 	for (size_t i = 0; i < mysql_func.load_model.size(); i++)
 	{
 		printf("load_model[%d] = %d\n",i,mysql_func.load_model[i]);
 	}
-*/
 mysql_func.get_price();
 	for (size_t i = 0; i < mysql_func.price.size(); i++)
 	{
