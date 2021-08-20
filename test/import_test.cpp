@@ -5,7 +5,7 @@ using namespace std;
 int main(){
 
 MYSQL_FUNC mysql_func("140.124.42.65","root", "fuzzy314", "Hems_lib");
-
+OPTIMIZE opt;
 mysql_func.get_experimental_parameters();
 
 #ifdef DEBUG
@@ -36,15 +36,27 @@ cout<<"PV = "<<mysql_func.pf.PV<<endl;
 #endif
 
 mysql_func.get_load_model();
+#ifdef DEBUG
 	for (size_t i = 0; i < mysql_func.load_model.size(); i++)
 	{
 		printf("load_model[%d] = %d\n",i,mysql_func.load_model[i]);
 	}
+#endif
 mysql_func.get_price();
+#ifdef DEBUG	
 	for (size_t i = 0; i < mysql_func.price.size(); i++)
 	{
 		printf("price[%d] = %f\n",i,mysql_func.price[i]);
 	}
+#endif
+
+opt.set_variable_name(mysql_func.pf);
+	
+	for (size_t i = 0; i < opt.variable_name.size(); i++)
+	{
+		cout<<opt.variable_name[i]<<endl;
+	}
+
 
 return 0;
 }

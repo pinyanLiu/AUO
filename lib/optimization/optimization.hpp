@@ -7,15 +7,15 @@
 #include <string.h>
 #include <vector>
 
-class optimization
+class OPTIMIZE
 {
 private:
     glp_prob* mip;
-    std::vector<std::string> variable_name;
     int num_of_variable;
 public:
-    optimization(/* args */);
-    ~optimization();
+    OPTIMIZE(/* args */);
+    ~OPTIMIZE();
+        std::vector<std::string> variable_name;
     void set_variable_name(MYSQL_FUNC::PLAN_FLAG pf);
     int  cal_var_num();
     void set_obj(MYSQL_FUNC::PLAN_FLAG pf);//set objective function

@@ -1,14 +1,14 @@
 #include "optimization.hpp"
 
-optimization::optimization(/* args */)
+OPTIMIZE::OPTIMIZE(/* args */)
 {
 }
 
-optimization::~optimization()
+OPTIMIZE::~OPTIMIZE()
 {
 }
 
-void optimization::set_variable_name(MYSQL_FUNC::PLAN_FLAG pf)
+void OPTIMIZE::set_variable_name(MYSQL_FUNC::PLAN_FLAG pf)
 {
     if (pf.Pgrid == 1)
 		variable_name.push_back("Pgrid");
