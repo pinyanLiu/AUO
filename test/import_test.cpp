@@ -5,7 +5,7 @@ using namespace std;
 int main(){
 
 MYSQL_FUNC mysql_func("140.124.42.65","root", "fuzzy314", "Hems_lib");
-OPTIMIZE opt;
+OPTIMIZE opt("GHEMS","max");
 mysql_func.get_experimental_parameters();
 
 #ifdef DEBUG
@@ -56,7 +56,7 @@ opt.set_variable_name(mysql_func.pf);
 	{
 		cout<<opt.variable_name[i]<<endl;
 	}
-
+opt.cal_var_num();
 
 return 0;
 }
