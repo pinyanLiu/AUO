@@ -1,7 +1,7 @@
 #include "optimization.hpp"
 #define DEBUG
 
-OPTIMIZE::OPTIMIZE(char* prob_name,char* extremum,MYSQL_FUNC::EXPERIMENTAL_PARAMETERS EP)
+OPTIMIZE::OPTIMIZE(char* prob_name,char* extremum,MYSQL_FUNC::EXPERIMENTAL_PARAMETERS EP,MYSQL_FUNC::PLAN_FLAG PF)
 {
 	mip = glp_create_prob();
 	glp_set_prob_name(mip, prob_name);
@@ -10,8 +10,14 @@ OPTIMIZE::OPTIMIZE(char* prob_name,char* extremum,MYSQL_FUNC::EXPERIMENTAL_PARAM
 	else if (extremum == "min" || extremum == "MIN")
 		glp_set_obj_dir(mip, GLP_MIN);
 
-	Total_Row = (EP.time_block - EP.Global_next_simulate_timeblock) * 200 + 1;//should have a better way to calculate this but maybe do it later.
-	Total_Col = num_of_variable * (EP.time_block - EP.Global_next_simulate_timeblock);
+//construct glpk matrix
+	set_variable_name(PF);
+	cal_var_num();
+	cal_Total_Col(EP);
+	cal_Total_Row(EP);
+	coefficient = NEW2D(Total_Row, Total_Col, float);
+	glp_add_rows(mip, Total_Row);
+	glp_add_cols(mip, Total_Col);
 
 }
 
@@ -72,10 +78,24 @@ void OPTIMIZE::cal_var_num()
 {
 	this->num_of_variable = variable_name.size();
 	#ifdef DEBUG
-		std::cout<<"num_of_variable"<<num_of_variable<<std::endl;
+		std::cout<<"num_of_variable:"<<num_of_variable<<std::endl;
 	#endif
 }
 
+void OPTIMIZE::cal_Total_Row(MYSQL_FUNC::EXPERIMENTAL_PARAMETERS EP)
+{
+	this->Total_Row = (EP.time_block - EP.Global_next_simulate_timeblock) * 200 + 1;//should have a better way to calculate this but maybe i'll do it later.
+	#ifdef DEBUG
+		std::cout<<"Total_Row:"<<Total_Row<<std::endl;
+	#endif
+}
+void OPTIMIZE::cal_Total_Col(MYSQL_FUNC::EXPERIMENTAL_PARAMETERS EP)
+{
+	this->Total_Col = num_of_variable * (EP.time_block - EP.Global_next_simulate_timeblock);
+	#ifdef DEBUG
+		std::cout<<"Total_Col:"<<Total_Col<<std::endl;
+	#endif
+}
 void OPTIMIZE::set_obj(MYSQL_FUNC::PLAN_FLAG pf)
 {
 

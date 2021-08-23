@@ -1,11 +1,10 @@
 #include "mysql_func.hpp"
 #include "optimization.hpp"
-#define DEBUG
+//#define DEBUG
 using namespace std;
 int main(){
 
 MYSQL_FUNC mysql_func("140.124.42.65","root", "fuzzy314", "Hems_lib");
-OPTIMIZE opt("GHEMS","max");
 mysql_func.get_experimental_parameters();
 
 #ifdef DEBUG
@@ -49,14 +48,7 @@ mysql_func.get_price();
 		printf("price[%d] = %f\n",i,mysql_func.price[i]);
 	}
 #endif
-
-opt.set_variable_name(mysql_func.pf);
-	
-	for (size_t i = 0; i < opt.variable_name.size(); i++)
-	{
-		cout<<opt.variable_name[i]<<endl;
-	}
-opt.cal_var_num();
+OPTIMIZE opt("GHEMS","max",mysql_func.ep,mysql_func.pf);
 
 return 0;
 }
