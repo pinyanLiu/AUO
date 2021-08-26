@@ -39,9 +39,9 @@ class MYSQL_FUNC
             bool FC;
             bool Pess;
             bool Sell;
-            bool DR;//for limiting battery has to dischargeat   east 80% per day.
+            bool DR;
             bool Comfort;
-            bool SOC_change;
+            bool SOC_change;//for limiting battery has to discharge at least 80% per day.
         }PLAN_FLAG;
         std::vector<int> load_model;
         std::vector<float> price;
