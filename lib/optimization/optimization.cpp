@@ -86,14 +86,14 @@ void OPTIMIZE::cal_var_num()
 	#endif
 }
 
-void OPTIMIZE::cal_Total_Row(MYSQL_FUNC::EXPERIMENTAL_PARAMETERS EP)
+void OPTIMIZE::cal_Total_Row()
 {
 	this->Total_Row = (this->time_block - this->Global_next_simulate_timeblock) * 200 + 1;//should have a better way to calculate this but maybe i'll do it later.
 	#ifdef DEBUG
 		std::cout<<"Total_Row:"<<Total_Row<<std::endl;
 	#endif
 }
-void OPTIMIZE::cal_Total_Col(MYSQL_FUNC::EXPERIMENTAL_PARAMETERS EP)
+void OPTIMIZE::cal_Total_Col()
 {
 	this->Total_Col = num_of_variable * (this->time_block - this->Global_next_simulate_timeblock);
 	#ifdef DEBUG
@@ -162,7 +162,7 @@ int OPTIMIZE::find_variableName_position(string target)
 		return -1;
 }
 
-int OPTIMIZE::get_remain_timeblock(MYSQL_FUNC::EXPERIMENTAL_PARAMETERS EP)
+int OPTIMIZE::get_remain_timeblock()
 {
 	return (this->time_block - this->Global_next_simulate_timeblock)
 }
@@ -184,19 +184,19 @@ void get_EP(MYSQL_FUNC::EXPERIMENTAL_PARAMETERS EP)
 	this->simulate_price = EP.simulate_price;
 }
 
-void OPTIMIZE::set_Pgrid_col(MYSQL_FUNC::EXPERIMENTAL_PARAMETERS EP)
+void OPTIMIZE::set_Pgrid_col()
 {
 	glp_set_col_bnds(mip, (find_variableName_position(variable_name, "Pgrid") + 1 + i * num_of_variable), GLP_DB, 0.0, this->P_grid_max); 
 	glp_set_col_kind(mip, (find_variableName_position(variable_name, "Pgrid") + 1 + i * num_of_variable), GLP_CV);
 }
 /*
-void OPTIMIZE::set_Psell_col(MYSQL_FUNC::EXPERIMENTAL_PARAMETERS EP)
+void OPTIMIZE::set_Psell_col()
 {
 	glp_set_col_bnds(mip, (find_variableName_position(variable_name, "Psell") + 1 + i * num_of_variable), GLP_DB, -0.00001, this->Psell_max);
 	glp_set_col_kind(mip, (find_variableName_position(variable_name, "Psell") + 1 + i * num_of_variable), GLP_CV);
 }
 */
-void OPTIMIZE::set_Pess_col(MYSQL_FUNC::EXPERIMENTAL_PARAMETERS EP)
+void OPTIMIZE::set_Pess_col()
 {
 	glp_set_col_bnds(mip, (find_variableName_position(variable_name, "Pess") + 1 + i * num_of_variable), GLP_DB, -this->P_bat_min, this->P_bat_max); // Pess
 	glp_set_col_kind(mip, (find_variableName_position(variable_name, "Pess") + 1 + i * num_of_variable), GLP_CV);
