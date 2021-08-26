@@ -3,6 +3,10 @@
 MYSQL_FUNC::MYSQL_FUNC(std::string iP, std::string name, std::string passwd, std::string database)
 {
 	mysql_lib = new MYSQL_LIB(iP,name,passwd,database);
+	get_experimental_parameters();
+	get_plan_flag();
+	get_load_model();
+	get_price();
 }
 
 //MYSQL_FUNC::EXPERIMENTAL_PARAMETERS MYSQL_FUNC::get_experimental_parameters()

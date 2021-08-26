@@ -7,27 +7,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <vector>
+#include<algorithm>
 
 class OPTIMIZE
 {
 private:
-    glp_prob* mip;
-    int num_of_variable;
-    double **coefficient;
-    int Total_Row;
-    int Total_Col;
-    int coef_row_num = 0, bnd_row_num = 1;
-    int remain_timeblock;
-    int get_remain_timeblock();
-    void cal_var_num();
-    void cal_Total_Row();
-    void cal_Total_Col();
-    int find_variableName_position(string target);
-    void get_EP(MYSQL_FUNC::EXPERIMENTAL_PARAMETERS EP)
-    // --------- SET COLUMN FUNCS --------- //
-    void set_Pgrid_col();
-    void set_Psell_col();
-    void set_Pess_col();
 
     typedef struct 
         {
@@ -46,6 +30,27 @@ private:
             std::string simulate_price;
             
         }EXPERIMENTAL_PARAMETERS;
+    
+    EXPERIMENTAL_PARAMETERS ep;
+    glp_prob* mip;
+    int num_of_variable;
+    double **coefficient;
+    int Total_Row;
+    int Total_Col;
+    int coef_row_num = 0, bnd_row_num = 1;
+    int remain_timeblock;//time block - sample time
+
+    int get_remain_timeblock();
+    void cal_var_num();
+    void cal_Total_Row();
+    void cal_Total_Col();
+    void get_EP(MYSQL_FUNC::EXPERIMENTAL_PARAMETERS EP);
+    // --------- SET COLUMN FUNCS --------- //
+    void set_Pgrid_col();
+    void set_Psell_col();
+    void set_Pess_col();
+    void set_Pess_change_col();
+
 
 public:
     std::vector<std::string> variable_name;
@@ -56,6 +61,10 @@ public:
     void set_constraint_matrix(MYSQL_FUNC::PLAN_FLAG PF);//set whole row,include balanced function and restricted function
     void set_col();//set whole variable constraint
     void set_cal_parm();//set the calculation method and parameter
+private:
+    int find_variableName_position(std::string target);
+
+
 };
 
 
