@@ -12,11 +12,10 @@ OPTIMIZE::OPTIMIZE(char* prob_name,char* extremum,MYSQL_FUNC::EXPERIMENTAL_PARAM
 	else if (extremum == "min" || extremum == "MIN")
 		glp_set_obj_dir(mip, GLP_MIN);
 //get remain time block
-	remain_timeblock = get_remain_timeblock();
-	#ifdef DEBUG
-		std::cout<<"remain_timeblock"<<remain_timeblock<<std::endl;
-	#endif
+	cal_remain_timeblock();
+
 //construct glpk matrix
+
 	set_variable_name(PF);
 	cal_var_num();
 	cal_Total_Col();
@@ -74,11 +73,11 @@ void OPTIMIZE::set_variable_name(MYSQL_FUNC::PLAN_FLAG PF)
 
 	}
 	*/
-	/*
+	
 	if(PF.PV){
-
+		variable_name.push_back("Ppv");
 	}
-	*/
+	
 }
 
 void OPTIMIZE::cal_var_num()
@@ -103,14 +102,18 @@ void OPTIMIZE::cal_Total_Col()
 		std::cout<<"Total_Col:"<<Total_Col<<std::endl;
 	#endif
 }
+
+void OPTIMIZE::cal_remain_timeblock()
+{
+	this->remain_timeblock = (this->ep.time_block - this->ep.Global_next_simulate_timeblock);
+	#ifdef DEBUG
+		std::cout<<"remain_timeblock:"<<remain_timeblock<<std::endl;
+	#endif
+}
+
 void OPTIMIZE::set_obj(MYSQL_FUNC::PLAN_FLAG PF)
 {
-	
-	
-}
-/*
-void OPTIMIZE::set_col(MYSQL_FUNC::PLAN_FLAG PF)
-{
+	/*
 	for(int i = 0; i<remain_timeblock;i++)
 	{
 		if(PF.Pgrid)
@@ -149,10 +152,54 @@ void OPTIMIZE::set_col(MYSQL_FUNC::PLAN_FLAG PF)
 
 
 	}
-
-
-}
 */
+	
+}
+
+void OPTIMIZE::set_col(MYSQL_FUNC::PLAN_FLAG PF)
+{
+	for(int i = 0; i<remain_timeblock;i++)
+	{
+		if(PF.Pgrid)
+		{
+			set_Pgrid_col();
+		}
+		else if(PF.PV)
+		{
+			set_Ppv_col();
+		}
+/*
+		else if (PF.FC)
+		{
+
+		}
+*/
+		else if (PF.Pess)
+		{
+			set_Pess_col();
+				if (PF.SOC_change)
+				{
+					set_Pess_change_col();
+				}
+		}
+		else if (PF.Sell)
+		{
+			set_Psell_col();
+		}
+/*
+		else if (PF.DR)
+		{
+
+		}
+		else if (PF.Comfort)
+		{
+
+		}
+*/
+
+	}
+}
+
 int OPTIMIZE::find_variableName_position(std::string target)
 {
 	auto it = std::find(variable_name.begin(),variable_name.end(),target);
@@ -167,10 +214,7 @@ int OPTIMIZE::find_variableName_position(std::string target)
 
 }
 
-int OPTIMIZE::get_remain_timeblock()
-{
-	return (this->ep.time_block - this->ep.Global_next_simulate_timeblock);
-}
+
 
 void OPTIMIZE::get_EP(MYSQL_FUNC::EXPERIMENTAL_PARAMETERS EP)
 {
@@ -240,6 +284,15 @@ void OPTIMIZE::set_Pess_change_col()
 			glp_set_col_kind(mip,(find_variableName_position("SOC_Z") + 1 + i * num_of_variable),GLP_BV);
 		}
 
+	}
+	
+}
+void OPTIMIZE::set_Ppv_col()
+{
+	for(int i = 0;i<remain_timeblock;i++)
+	{
+		glp_set_col_bnds(mip, (find_variableName_position("Ppv") + 1 + i * num_of_variable), GLP_FX, 1, 1); 
+		glp_set_col_kind(mip, (find_variableName_position("Ppv") + 1 + i * num_of_variable), GLP_CV);
 	}
 	
 }

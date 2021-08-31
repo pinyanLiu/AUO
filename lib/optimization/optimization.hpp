@@ -40,7 +40,7 @@ private:
     int coef_row_num = 0, bnd_row_num = 1;
     int remain_timeblock;//time block - sample time
 
-    int get_remain_timeblock();
+    void cal_remain_timeblock();
     void cal_var_num();
     void cal_Total_Row();
     void cal_Total_Col();
@@ -50,6 +50,7 @@ private:
     void set_Psell_col();
     void set_Pess_col();
     void set_Pess_change_col();
+    void set_Ppv_col();
 
 
 public:
@@ -59,8 +60,9 @@ public:
     void set_variable_name(MYSQL_FUNC::PLAN_FLAG PF);//push variable under each situation
     void set_obj(MYSQL_FUNC::PLAN_FLAG PF);//set objective function
     void set_constraint_matrix(MYSQL_FUNC::PLAN_FLAG PF);//set whole row,include balanced function and restricted function
-    void set_col();//set whole variable constraint
+    void set_col(MYSQL_FUNC::PLAN_FLAG PF);//set whole variable constraint
     void set_cal_parm();//set the calculation method and parameter
+
 private:
     int find_variableName_position(std::string target);
 
