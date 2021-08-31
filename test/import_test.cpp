@@ -1,12 +1,14 @@
 #include "mysql_func.hpp"
 #include "optimization.hpp"
-//#define DEBUG1
+
+#define DEBUG1
 using namespace std;
 int main(){
 
 MYSQL_FUNC mysql_func("140.124.42.65","root", "fuzzy314", "Hems_lib");
 OPTIMIZE opt("GHEMS","max",mysql_func.ep,mysql_func.pf);
-
+opt.set_col(mysql_func.pf);
+opt.outport_file();
 #ifdef DEBUG1
 
 mysql_func.get_experimental_parameters();

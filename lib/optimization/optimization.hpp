@@ -62,6 +62,7 @@ public:
     void set_constraint_matrix(MYSQL_FUNC::PLAN_FLAG PF);//set whole row,include balanced function and restricted function
     void set_col(MYSQL_FUNC::PLAN_FLAG PF);//set whole variable constraint
     void set_cal_parm();//set the calculation method and parameter
+    void outport_file();
 
 private:
     int find_variableName_position(std::string target);
