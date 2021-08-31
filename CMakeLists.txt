@@ -13,7 +13,8 @@ cmake_minimum_required(VERSION 3.10)
 
  # Environment variables
  set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install" CACHE PATH "Installation directory")
- option(BUILD_TEST "Enable building test" OFF)
+ set(CMAKE_CXX_FLAGS "-std=c++17 -rdynamic -g")
+ option(BUILD_TEST "Enable building test" ON)
  option(BUILD_SHARED_LIBS "Build shared library" OFF)
 
  set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Build configure" FORCE)

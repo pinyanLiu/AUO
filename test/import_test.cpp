@@ -8,6 +8,7 @@ int main(){
 MYSQL_FUNC mysql_func("140.124.42.65","root", "fuzzy314", "Hems_lib");
 OPTIMIZE opt("GHEMS","max",mysql_func.ep,mysql_func.pf);
 opt.set_col(mysql_func.pf);
+opt.set_obj(mysql_func.pf,mysql_func.price);
 opt.outport_file();
 #ifdef DEBUG1
 

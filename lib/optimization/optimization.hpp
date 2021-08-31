@@ -8,6 +8,7 @@
 #include <string.h>
 #include <vector>
 #include<algorithm>
+#include<charconv> 
 
 class OPTIMIZE
 {
@@ -58,7 +59,7 @@ public:
     OPTIMIZE(char* prob_name,char* extremum,MYSQL_FUNC::EXPERIMENTAL_PARAMETERS EP,MYSQL_FUNC::PLAN_FLAG PF);
     ~OPTIMIZE();
     void set_variable_name(MYSQL_FUNC::PLAN_FLAG PF);//push variable under each situation
-    void set_obj(MYSQL_FUNC::PLAN_FLAG PF);//set objective function
+    void set_obj(MYSQL_FUNC::PLAN_FLAG PF,std::vector<float> price);//set objective function
     void set_constraint_matrix(MYSQL_FUNC::PLAN_FLAG PF);//set whole row,include balanced function and restricted function
     void set_col(MYSQL_FUNC::PLAN_FLAG PF);//set whole variable constraint
     void set_cal_parm();//set the calculation method and parameter

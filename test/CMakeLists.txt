@@ -30,7 +30,7 @@ foreach(TEST_FILE_PATH ${PROJECT_SRCS})
     # Build executable
     add_executable(${TEST_FILE_NAME} ${TEST_FILE_PATH})
     set_target_properties(${TEST_FILE_NAME} PROPERTIES
-        CXX_STANDARD 11
+        CXX_STANDARD 17
         OUTPUT_NAME ${TEST_FILE_NAME}
         )
     target_link_libraries(${TEST_FILE_NAME} ${PROJECT_DEPS} )

@@ -111,48 +111,21 @@ void OPTIMIZE::cal_remain_timeblock()
 	#endif
 }
 
-void OPTIMIZE::set_obj(MYSQL_FUNC::PLAN_FLAG PF)
+void OPTIMIZE::set_obj(MYSQL_FUNC::PLAN_FLAG PF,std::vector<float> price)
 {
-	/*
-	for(int i = 0; i<remain_timeblock;i++)
+	
+	for (int j = 0; j < remain_timeblock; j++)
 	{
-		if(PF.Pgrid)
-		{
-
-		}
-		else if(PF.PV)
-		{
-
-		}
-		else if (PF.FC)
-		{
-
-		}
-		else if (PF.Pess)
-		{
-
-				if (PF.SOC_change)
-				{
-				
-				}
-
-		}
-		else if (PF.Sell)
-		{
-
-		}
-		else if (PF.DR)
-		{
-
-		}
-		else if (PF.Comfort)
-		{
-
-		}
-
-
+		if (PF.Pgrid)
+			glp_set_obj_coef(mip, (find_variableName_position("Pgrid") + 1 + j * num_of_variable), price[j + ep.Global_next_simulate_timeblock] * delta_T);
+	/*	
+		if (PF.Sell)
+			glp_set_obj_coef(mip, (find_variableName_position("Psell") + 1 + j * num_of_variable), price[j + sample_time] * delta_T * (-1));
+	
+		if (PF.FC)
+			glp_set_obj_coef(mip, (find_variableName_position("Pfct") + 1 + j * num_of_variable), Hydro_Price / Hydro_Cons * delta_T); //FC cost
+	*/
 	}
-*/
 	
 }
 
@@ -224,7 +197,7 @@ void OPTIMIZE::set_Pgrid_col()
 {
 	for(int i = 0;i<remain_timeblock;i++)
 	{
-		glp_set_col_name(mip, (find_variableName_position("Pgrid") + 1 + i * num_of_variable),"Pgrid");
+		glp_set_col_name(mip, (find_variableName_position("Pgrid") + 1 + i * num_of_variable),("Pgrid_"+std::to_string(i)).c_str());
 		glp_set_col_bnds(mip, (find_variableName_position("Pgrid") + 1 + i * num_of_variable), GLP_DB, 0.0, this->ep.P_grid_max); 
 		glp_set_col_kind(mip, (find_variableName_position("Pgrid") + 1 + i * num_of_variable), GLP_CV);
 	}
@@ -241,23 +214,23 @@ void OPTIMIZE::set_Pess_col()
 {
 	for(int i = 0;i<remain_timeblock;i++)
 	{
-		glp_set_col_name(mip, (find_variableName_position("Pess") + 1 + i * num_of_variable),"Pess");
+		glp_set_col_name(mip, (find_variableName_position("Pess") + 1 + i * num_of_variable),("Pess_"+std::to_string(i)).c_str());
 		glp_set_col_bnds(mip, (find_variableName_position( "Pess") + 1 + i * num_of_variable), GLP_DB, -this->ep.P_bat_min, this->ep.P_bat_max); // Pess
 		glp_set_col_kind(mip, (find_variableName_position( "Pess") + 1 + i * num_of_variable), GLP_CV);
 //------------------------------------------------------------------------------------------------------
-		glp_set_col_name(mip, (find_variableName_position("Pcharge") + 1 + i * num_of_variable),"Pcharge");
+		glp_set_col_name(mip, (find_variableName_position("Pcharge") + 1 + i * num_of_variable),("Pcharge_"+std::to_string(i)).c_str());
 		glp_set_col_bnds(mip, (find_variableName_position("Pcharge") + 1 + i * num_of_variable), GLP_DB,0.0, this->ep.P_bat_max); // Pess +
 		glp_set_col_kind(mip,(find_variableName_position("Pcharge") + 1 + i * num_of_variable),GLP_CV);
 //-------------------------------------------------------------------------------------------------------
-		glp_set_col_name(mip, (find_variableName_position("Pdischarge") + 1 + i * num_of_variable),"Pdischarge");		
+		glp_set_col_name(mip, (find_variableName_position("Pdischarge") + 1 + i * num_of_variable),("Pdischarge_"+std::to_string(i)).c_str());		
 		glp_set_col_bnds(mip,(find_variableName_position("Pdischarge") + 1 + i * num_of_variable),GLP_DB,-this->ep.P_bat_min, 0.0); // Pess -
 		glp_set_col_kind(mip,(find_variableName_position("Pdischarge") + 1 + i * num_of_variable),GLP_CV);
 //------------------------------------------------------------------------------------------------------
-		glp_set_col_name(mip, (find_variableName_position("SOC") + 1 + i * num_of_variable),"SOC");		
+		glp_set_col_name(mip, (find_variableName_position("SOC") + 1 + i * num_of_variable),("SOC_"+std::to_string(i)).c_str());		
 		glp_set_col_bnds(mip,(find_variableName_position("SOC") + 1 + i * num_of_variable), GLP_DB,this->ep.SOC_min,this->ep.SOC_max); //SOC
 		glp_set_col_kind(mip,(find_variableName_position("SOC") + 1 + i * num_of_variable), GLP_CV);
 //----------------------------------------------------------------------------------------------------
-		glp_set_col_name(mip, (find_variableName_position("Z") + 1 + i * num_of_variable),"Z");		
+		glp_set_col_name(mip, (find_variableName_position("Z") + 1 + i * num_of_variable),("Z_"+std::to_string(i)).c_str());		
 		glp_set_col_bnds(mip,(find_variableName_position( "Z")+ 1 + i * num_of_variable), GLP_DB, 0.0, 1.0); //Z
 		glp_set_col_kind(mip,(find_variableName_position( "Z")+ 1 + i * num_of_variable), GLP_BV);
 		
@@ -271,19 +244,19 @@ void OPTIMIZE::set_Pess_change_col()
 	for(int i = 0;i<remain_timeblock;i++)
 	{
 		{
-			glp_set_col_name(mip, (find_variableName_position("SOC_change") + 1 + i * num_of_variable),"SOC_change");
+			glp_set_col_name(mip, (find_variableName_position("SOC_change") + 1 + i * num_of_variable),("SOC_change_"+std::to_string(i)).c_str());
 			glp_set_col_bnds(mip,(find_variableName_position("SOC_change") + 1 + i * num_of_variable), GLP_DB,(-this->ep.P_bat_min * delta_T) / (this->ep.vess_cess),(this->ep.P_bat_max * delta_T) / (this->ep.vess_cess));
 			glp_set_col_kind(mip,(find_variableName_position("SOC_change") + 1 + i * num_of_variable), GLP_CV);
 //----------------------------------------------------------------------------------------------------
-			glp_set_col_name(mip, (find_variableName_position("SOC_increase") + 1 + i * num_of_variable),"SOC_increase");
+			glp_set_col_name(mip, (find_variableName_position("SOC_increase") + 1 + i * num_of_variable),("SOC_increase_"+std::to_string(i)).c_str());
 			glp_set_col_bnds(mip,(find_variableName_position("SOC_increase") + 1 + i * num_of_variable),GLP_DB, 0.0, (this->ep.P_bat_max * delta_T) /(this->ep.	vess_cess));
 			glp_set_col_kind(mip,(find_variableName_position("SOC_increase") + 1 + i * num_of_variable), GLP_CV);
 //----------------------------------------------------------------------------------------------------			
-			glp_set_col_name(mip, (find_variableName_position("SOC_decrease") + 1 + i * num_of_variable),"SOC_decrease");
+			glp_set_col_name(mip, (find_variableName_position("SOC_decrease") + 1 + i * num_of_variable),("SOC_decrease_"+std::to_string(i)).c_str());
 			glp_set_col_bnds(mip,(find_variableName_position("SOC_decrease") + 1 + i * num_of_variable),GLP_DB, (-this->ep.P_bat_min * delta_T) /(this->ep.	vess_cess), 0.0);
 			glp_set_col_kind(mip,(find_variableName_position("SOC_decrease") + 1 + i * num_of_variable), GLP_CV);
 //----------------------------------------------------------------------------------------------------
-			glp_set_col_name(mip, (find_variableName_position("SOC_Z") + 1 + i * num_of_variable),"SOC_Z");
+			glp_set_col_name(mip, (find_variableName_position("SOC_Z") + 1 + i * num_of_variable),("SOC_Z_"+std::to_string(i)).c_str());
 			glp_set_col_bnds(mip,(find_variableName_position("SOC_Z") + 1 + i * num_of_variable),GLP_DB, 0.0,1.0);
 			glp_set_col_kind(mip,(find_variableName_position("SOC_Z") + 1 + i * num_of_variable),GLP_BV);
 		}
@@ -295,7 +268,7 @@ void OPTIMIZE::set_Ppv_col()
 {
 	for(int i = 0;i<remain_timeblock;i++)
 	{
-		glp_set_col_name(mip, (find_variableName_position("Ppv") + 1 + i * num_of_variable),"Ppv");
+		glp_set_col_name(mip, (find_variableName_position("Ppv") + 1 + i * num_of_variable),("Ppv_"+std::to_string(i)).c_str());
 		glp_set_col_bnds(mip, (find_variableName_position("Ppv") + 1 + i * num_of_variable), GLP_FX, 1, 1); 
 		glp_set_col_kind(mip, (find_variableName_position("Ppv") + 1 + i * num_of_variable), GLP_CV);
 	}

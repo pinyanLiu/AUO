@@ -41,7 +41,7 @@ file(GLOB PROJECT_SRCS
 # Build library
 add_library(${PROJECT_NAME} ${PROJECT_SRCS})
 set_target_properties(${PROJECT_NAME} PROPERTIES
-    CXX_STANDARD 11
+    CXX_STANDARD 17
     OUTPUT_NAME ${PROJECT_NAME}
     PREFIX "lib"
     )
