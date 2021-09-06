@@ -60,7 +60,7 @@ void MYSQL_LIB::print_result(void)
     while((mysql_row=mysql_fetch_row(mysql_res))!=NULL){
         //將每行欄位都讀出來.
         for(int i=0;i<num;i++){
-            std::cout << mysql_row[i]<<" "<<i;
+            std::cout << mysql_row[i]<<" ";
         }
         std::cout << std::endl;
     }

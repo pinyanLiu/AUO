@@ -43,10 +43,52 @@ class MYSQL_FUNC
             bool Comfort;
             bool SOC_change;//for limiting battery has to discharge at least 80% per day.
         }PLAN_FLAG;
+
+        typedef struct 
+        {
+            int id;
+            int group_id;
+            int start_time;
+            int end_time;
+            int operation_time;
+            int remain_op_time;
+            float max_power;
+            std::string equip_name;
+        }INTERRUPT_LOAD;
+        typedef struct 
+        {
+            int id;
+            int group_id;
+            int start_time;
+            int end_time;
+            int operation_time;
+            int remain_op_time;
+            float max_power;
+            bool started_flag;
+            std::string equip_name;
+        }UNINTERRUPT_LOAD;
+        typedef struct 
+        {
+            int id;
+            int group_id;
+            int start_time;
+            int end_time;
+            int operation_time;
+            int remain_op_time;
+            int op_time_block[3];
+            float power_block[3];
+            bool started_flag;
+            std::string equip_name;
+        }VARYING_LOAD;
+        
+
         std::vector<int> load_model;
         std::vector<float> price;
         EXPERIMENTAL_PARAMETERS ep;//ep for EXPERIMENTAL_PARAMETERS
         PLAN_FLAG pf;//pf for PLAN_FLAG
+        INTERRUPT_LOAD* interrupt_load;
+        UNINTERRUPT_LOAD* uninterrupt_load;
+        VARYING_LOAD* varying_load;
      public:
         MYSQL_FUNC(std::string iP, std::string name, std::string passwd, std::string database);
        // EXPERIMENTAL_PARAMETERS get_experimental_parameters();
@@ -54,8 +96,9 @@ class MYSQL_FUNC
         void get_plan_flag();
         void get_load_model();//LD for loadmodel
         void get_price();//PRICE for .......PRICE
-        //對資料庫進行sql操作
-        
+        void get_interrupt_data();
+        void get_uninterrupt_data();
+        void get_varying_data();
         ~MYSQL_FUNC();
      private:
      MYSQL_LIB* mysql_lib;

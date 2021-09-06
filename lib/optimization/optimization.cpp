@@ -1,6 +1,8 @@
 #include "optimization.hpp"
+//
 #define DEBUG
 #define delta_T 0.25
+
 
 OPTIMIZE::OPTIMIZE(char* prob_name,char* extremum,MYSQL_FUNC::EXPERIMENTAL_PARAMETERS EP,MYSQL_FUNC::PLAN_FLAG PF)
 {

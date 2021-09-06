@@ -56,7 +56,8 @@
         "typeindex": "cpp",
         "typeinfo": "cpp",
         "slist": "cpp",
-        "iomanip": "cpp"
+        "iomanip": "cpp",
+        "charconv": "cpp"
     },
     "editor.wordWrap": "on"
 }

@@ -1,17 +1,30 @@
 #include "mysql_func.hpp"
 #include "optimization.hpp"
 
-#define DEBUG1
+//#define DEBUG1
 using namespace std;
 int main(){
 
 MYSQL_FUNC mysql_func("140.124.42.65","root", "fuzzy314", "Hems_lib");
+mysql_func.get_interrupt_data();
+
+for (size_t i = 0; i < 12; i++)
+{
+cout<<"id = "<<mysql_func.interrupt_load[i].id<<" ";
+cout<<"group_id = "<<mysql_func.interrupt_load[i].group_id<<" ";
+cout<<"start_time = "<<mysql_func.interrupt_load[i].start_time<<" ";
+cout<<"end_time = "<<mysql_func.interrupt_load[i].end_time<<" ";
+cout<<"operation_time = "<<mysql_func.interrupt_load[i].operation_time<<" ";
+cout<<"max_power = "<<mysql_func.interrupt_load[i].max_power<<" ";
+cout<<endl;
+}
+
+
+#ifdef DEBUG1
 OPTIMIZE opt("GHEMS","max",mysql_func.ep,mysql_func.pf);
 opt.set_col(mysql_func.pf);
 opt.set_obj(mysql_func.pf,mysql_func.price);
 opt.outport_file();
-#ifdef DEBUG1
-
 mysql_func.get_experimental_parameters();
 
 cout<<"realtime = "<<mysql_func.ep.real_time<<endl;
