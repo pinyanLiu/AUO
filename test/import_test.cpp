@@ -7,6 +7,8 @@ int main(){
 
 MYSQL_FUNC mysql_func("140.124.42.65","root", "fuzzy314", "Hems_lib");
 mysql_func.get_interrupt_data();
+mysql_func.get_uninterrupt_data();
+mysql_func.get_varying_data();
 
 for (size_t i = 0; i < 12; i++)
 {
@@ -16,6 +18,36 @@ cout<<"start_time = "<<mysql_func.interrupt_load[i].start_time<<" ";
 cout<<"end_time = "<<mysql_func.interrupt_load[i].end_time<<" ";
 cout<<"operation_time = "<<mysql_func.interrupt_load[i].operation_time<<" ";
 cout<<"max_power = "<<mysql_func.interrupt_load[i].max_power<<" ";
+cout<<"equip_name = "<<mysql_func.interrupt_load[i].equip_name;
+cout<<endl;
+}
+
+for (size_t i = 0; i < 2; i++)
+{
+cout<<"id = "<<mysql_func.uninterrupt_load[i].id<<" ";
+cout<<"group_id = "<<mysql_func.uninterrupt_load[i].group_id<<" ";
+cout<<"start_time = "<<mysql_func.uninterrupt_load[i].start_time<<" ";
+cout<<"end_time = "<<mysql_func.uninterrupt_load[i].end_time<<" ";
+cout<<"operation_time = "<<mysql_func.uninterrupt_load[i].operation_time<<" ";
+cout<<"max_power = "<<mysql_func.uninterrupt_load[i].max_power<<" ";
+cout<<"equip_name = "<<mysql_func.uninterrupt_load[i].equip_name;
+cout<<endl;
+}
+
+for (size_t i = 0; i < 1; i++)
+{
+cout<<"id = "<<mysql_func.varying_load[i].id<<" ";
+cout<<"group_id = "<<mysql_func.varying_load[i].group_id<<" ";
+cout<<"start_time = "<<mysql_func.varying_load[i].start_time<<" ";
+cout<<"end_time = "<<mysql_func.varying_load[i].end_time<<" ";
+cout<<"operation_time = "<<mysql_func.varying_load[i].operation_time<<" ";
+cout<<"power_block[0] = "<<mysql_func.varying_load[i].power_block[0]<<" ";
+cout<<"power_block[1] = "<<mysql_func.varying_load[i].power_block[1]<<" ";
+cout<<"power_block[2] = "<<mysql_func.varying_load[i].power_block[2]<<" ";
+cout<<"op_time_block[0] = "<<mysql_func.varying_load[i].op_time_block[0]<<" ";
+cout<<"op_time_block[1] = "<<mysql_func.varying_load[i].op_time_block[1]<<" ";
+cout<<"op_time_block[2] = "<<mysql_func.varying_load[i].op_time_block[2]<<" ";
+cout<<"equip_name = "<<mysql_func.varying_load[i].equip_name;
 cout<<endl;
 }
 

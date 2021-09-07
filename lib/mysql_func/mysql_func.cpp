@@ -7,8 +7,8 @@ MYSQL_FUNC::MYSQL_FUNC(std::string iP, std::string name, std::string passwd, std
 {
 	mysql_lib = new MYSQL_LIB(iP,name,passwd,database);
 	interrupt_load = new INTERRUPT_LOAD[num_it];
-//	new UNINTERRUPT_LOAD[num_ut];
-//	new VARYING_LOAD[num_vr];
+	uninterrupt_load =  new UNINTERRUPT_LOAD[num_ut];
+	varying_load = new VARYING_LOAD[num_vr];
 //	get_experimental_parameters();
 //	get_plan_flag();
 //	get_load_model();
@@ -103,39 +103,39 @@ void MYSQL_FUNC::get_interrupt_data()
 		std::vector<std::string> string_result;
 		mysql_lib->operate("SELECT start_time FROM load_list  WHERE group_id = '1' ");
 		int_result = mysql_lib->getArray_and_atoi();
-		for (size_t i = 0; i < 12; i++)
+		for (size_t i = 0; i < num_it; i++)
 		{
 			interrupt_load[i].start_time = int_result[i];	
 		}
 		mysql_lib->operate("SELECT end_time FROM load_list  WHERE group_id = '1' ");
 		int_result = mysql_lib->getArray_and_atoi();
-		for (size_t i = 0; i < 12; i++)
+		for (size_t i = 0; i < num_it; i++)
 		{
 			interrupt_load[i].end_time = int_result[i];	
 		}
 
 		mysql_lib->operate("SELECT operation_time FROM load_list  WHERE group_id = '1' ");
 		int_result = mysql_lib->getArray_and_atoi();
-		for (size_t i = 0; i < 12; i++)
+		for (size_t i = 0; i < num_it; i++)
 		{
 			interrupt_load[i].operation_time = int_result[i];	
 		}
 
 		mysql_lib->operate("SELECT power1 FROM load_list  WHERE group_id = '1' ");
 		float_result = mysql_lib->getArray_and_atof();
-		for (size_t i = 0; i < 12; i++)
+		for (size_t i = 0; i < num_it; i++)
 		{
 			interrupt_load[i].max_power = float_result[i];	
 		}
 
 		mysql_lib->operate("SELECT equip_name FROM load_list  WHERE group_id = '1' ");
 		string_result = mysql_lib->getArray_string();
-		for (size_t i = 0; i < 12; i++)
+		for (size_t i = 0; i < num_it; i++)
 		{
 			interrupt_load[i].equip_name = string_result[i];	
 		}
 
-		for (size_t i = 0; i < 12; i++)
+		for (size_t i = 0; i < num_it; i++)
 		{
 			interrupt_load[i].id = i+1;
 			interrupt_load[i].group_id = 1;
@@ -148,39 +148,133 @@ void MYSQL_FUNC::get_interrupt_data()
 
 void MYSQL_FUNC::get_uninterrupt_data()
 {
-		mysql_lib->operate("SELECT start_time,end_time,operation_time,power1,equip_name FROM load_list WHERE group_id = 2");
+		std::vector<int> int_result;
+		std::vector<float> float_result;
+		std::vector<std::string> string_result;
+		
+		mysql_lib->operate("SELECT start_time FROM load_list  WHERE group_id = '2' ");
+		int_result = mysql_lib->getArray_and_atoi();
 		for (size_t i = 0; i < num_ut; i++)
 		{
-			this->uninterrupt_load[i].id = i+num_it+1;
-			this->uninterrupt_load[i].group_id = 2;
-			this->uninterrupt_load[i].start_time = mysql_lib->getRow_and_atoi();
-			this->uninterrupt_load[i].end_time = mysql_lib->getRow_and_atoi();
-			this->uninterrupt_load[i].operation_time = mysql_lib->getRow_and_atoi();
-			this->uninterrupt_load[i].max_power = mysql_lib->getRow_and_atoi();
-			this->uninterrupt_load[i].equip_name = mysql_lib->getRow_string();		
+			uninterrupt_load[i].start_time = int_result[i];	
+		}
+		mysql_lib->operate("SELECT end_time FROM load_list  WHERE group_id = '2' ");
+		int_result = mysql_lib->getArray_and_atoi();
+		for (size_t i = 0; i < num_ut; i++)
+		{
+			uninterrupt_load[i].end_time = int_result[i];	
 		}
 
+		mysql_lib->operate("SELECT operation_time FROM load_list  WHERE group_id = '2' ");
+		int_result = mysql_lib->getArray_and_atoi();
+		for (size_t i = 0; i < num_ut; i++)
+		{
+			uninterrupt_load[i].operation_time = int_result[i];	
+		}
+
+		mysql_lib->operate("SELECT power1 FROM load_list  WHERE group_id = '2' ");
+		float_result = mysql_lib->getArray_and_atof();
+		for (size_t i = 0; i < num_ut; i++)
+		{
+			uninterrupt_load[i].max_power = float_result[i];	
+		}
+
+
+		mysql_lib->operate("SELECT equip_name FROM load_list  WHERE group_id = '2' ");
+		string_result = mysql_lib->getArray_string();
+		for (size_t i = 0; i < num_ut; i++)
+		{
+			uninterrupt_load[i].equip_name = string_result[i];	
+		}
+
+		for (size_t i = 0; i < num_ut; i++)
+		{
+			uninterrupt_load[i].id = i+1+num_it;
+			uninterrupt_load[i].group_id = 2;
+		}
+		
 }
 
 void MYSQL_FUNC::get_varying_data()
 {
-		mysql_lib->operate("SELECT start_time,end_time,operation_time,power1,power2,power3,block1,block2,block3,equip_name FROM load_list WHERE group_id = 3");
+		std::vector<int> int_result;
+		std::vector<float> float_result;
+		std::vector<std::string> string_result;
+		
+		mysql_lib->operate("SELECT start_time FROM load_list  WHERE group_id = '3' ");
+		int_result = mysql_lib->getArray_and_atoi();
 		for (size_t i = 0; i < num_vr; i++)
 		{
-			this->varying_load[i].id = i+num_it+num_ut+1;
-			this->varying_load[i].group_id = 3;
-			this->varying_load[i].start_time = mysql_lib->getRow_and_atoi();
-			this->varying_load[i].end_time = mysql_lib->getRow_and_atoi();
-			this->varying_load[i].operation_time = mysql_lib->getRow_and_atoi();
-			this->varying_load[i].op_time_block[0] = mysql_lib->getRow_and_atoi();
-			this->varying_load[i].op_time_block[1] = mysql_lib->getRow_and_atoi();
-			this->varying_load[i].op_time_block[2] = mysql_lib->getRow_and_atoi();
-			this->varying_load[i].power_block[0] = mysql_lib->getRow_and_atoi();
-			this->varying_load[i].power_block[1] = mysql_lib->getRow_and_atoi();
-			this->varying_load[i].power_block[2] = mysql_lib->getRow_and_atoi();
-			this->varying_load[i].equip_name = mysql_lib->getRow_string();			
+			varying_load[i].start_time = int_result[i];	
+		}
+		mysql_lib->operate("SELECT end_time FROM load_list  WHERE group_id = '3' ");
+		int_result = mysql_lib->getArray_and_atoi();
+		for (size_t i = 0; i < num_vr; i++)
+		{
+			varying_load[i].end_time = int_result[i];	
 		}
 
+		mysql_lib->operate("SELECT operation_time FROM load_list  WHERE group_id = '3' ");
+		int_result = mysql_lib->getArray_and_atoi();
+		for (size_t i = 0; i < num_vr; i++)
+		{
+			varying_load[i].operation_time = int_result[i];	
+		}
+
+		mysql_lib->operate("SELECT power1 FROM load_list  WHERE group_id = '3' ");
+		float_result = mysql_lib->getArray_and_atof();
+		for (size_t i = 0; i < num_vr; i++)
+		{
+			varying_load[i].power_block[0] = float_result[i];	
+		}
+
+		mysql_lib->operate("SELECT power2 FROM load_list  WHERE group_id = '3' ");
+		float_result = mysql_lib->getArray_and_atof();
+		for (size_t i = 0; i < num_vr; i++)
+		{
+			varying_load[i].power_block[1] = float_result[i];	
+		}
+		
+		mysql_lib->operate("SELECT power3 FROM load_list  WHERE group_id = '3' ");
+		float_result = mysql_lib->getArray_and_atof();
+		for (size_t i = 0; i < num_vr; i++)
+		{
+			varying_load[i].power_block[2] = float_result[i];	
+		}
+
+		mysql_lib->operate("SELECT block1 FROM load_list  WHERE group_id = '3' ");
+		int_result = mysql_lib->getArray_and_atoi();
+		for (size_t i = 0; i < num_vr; i++)
+		{
+			varying_load[i].op_time_block[0] = int_result[i];	
+		}
+	
+		mysql_lib->operate("SELECT block2 FROM load_list  WHERE group_id = '3' ");
+		int_result = mysql_lib->getArray_and_atoi();
+		for (size_t i = 0; i < num_vr; i++)
+		{
+			varying_load[i].op_time_block[1] = int_result[i];	
+		}
+
+		mysql_lib->operate("SELECT block3 FROM load_list  WHERE group_id = '3' ");
+		int_result = mysql_lib->getArray_and_atoi();
+		for (size_t i = 0; i < num_vr; i++)
+		{
+			varying_load[i].op_time_block[2] = int_result[i];	
+		}
+
+		mysql_lib->operate("SELECT equip_name FROM load_list  WHERE group_id = '3' ");
+		string_result = mysql_lib->getArray_string();
+		for (size_t i = 0; i < num_vr; i++)
+		{
+			varying_load[i].equip_name = string_result[i];	
+		}
+
+		for (size_t i = 0; i < num_vr; i++)
+		{
+			varying_load[i].id = i+1+num_it+num_ut;
+			varying_load[i].group_id = 3;
+		}
 
 }
 
@@ -188,8 +282,8 @@ void MYSQL_FUNC::get_varying_data()
 MYSQL_FUNC::~MYSQL_FUNC()
 {
 
-	//delete []interrupt_load;
-	//delete []uninterrupt_load;
-	//delete []varying_load;
+	delete []interrupt_load;
+	delete []uninterrupt_load;
+	delete []varying_load;
 	delete mysql_lib;
 }
