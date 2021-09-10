@@ -54,7 +54,12 @@ void MYSQL_FUNC::get_experimental_parameters()
 	mysql_lib->operate("SELECT value FROM AUO_BaseParameter WHERE parameter_name = 'Global_next_simulate_timeblock'");
 	this->ep.Global_next_simulate_timeblock = mysql_lib->getRow_and_atoi();
 	
-	mysql_lib->operate("SELECT value FROM AUO_BaseParameter WHERE parameter_name = 'simulate_price'");this->ep.simulate_price = mysql_lib->getRow_string();
+	mysql_lib->operate("SELECT value FROM AUO_BaseParameter WHERE parameter_name = 'simulate_price'");
+	this->ep.simulate_price = mysql_lib->getRow_string();
+
+	this->ep.num_of_it_load = num_it;
+	this->ep.num_of_un_load = num_ut;
+	this->ep.num_of_vr_load = num_vr;
 }
 
 void MYSQL_FUNC::get_plan_flag()

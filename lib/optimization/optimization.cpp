@@ -193,7 +193,62 @@ void OPTIMIZE::get_EP(MYSQL_FUNC::EXPERIMENTAL_PARAMETERS EP)
 	this->ep.real_time  = EP.real_time;
 	this->ep.Global_next_simulate_timeblock = EP.Global_next_simulate_timeblock;
 	this->ep.simulate_price = EP.simulate_price;
+	this->ep.num_of_it_load = EP.num_of_it_load;
+	this->ep.num_of_un_load = EP.num_of_un_load;
+	this->ep.num_of_vr_load = EP.num_of_vr_load;
+
 }
+
+void OPTIMIZE::get_IT(MYSQL_FUNC::INTERRUPT_LOAD IT)
+{
+	this->interrupt_load.id = IT.id;
+	this->interrupt_load.group_id  = IT.group_id;
+	this->interrupt_load.SOC_min    = IT.SOC_min;
+	this->interrupt_load.SOC_max    = IT.SOC_max;
+	this->interrupt_load.SOC_threshold = IT.SOC_threshold;
+	this->interrupt_load.ini_SOC 	 = IT.ini_SOC;
+	this->interrupt_load.now_SOC 	 = IT.now_SOC;
+	this->interrupt_load.P_bat_max  = IT.P_bat_max;
+	this->interrupt_load.P_bat_min  = IT.P_bat_min;
+	this->interrupt_load.P_grid_max = IT.P_grid_max;
+	this->interrupt_load.real_time  = IT.real_time;
+	this->interrupt_load.Global_next_simulate_timeblock = IT.Global_next_simulate_timeblock;
+	this->interrupt_load.simulate_price = IT.simulate_price;
+}
+void OPTIMIZE::get_UT(MYSQL_FUNC::UNINTERRUPT_LOAD UT)
+{
+	this->ep.time_block = EP.time_block;
+	this->ep.vess_cess  = EP.vess_cess;
+	this->ep.SOC_min    = EP.SOC_min;
+	this->ep.SOC_max    = EP.SOC_max;
+	this->ep.SOC_threshold = EP.SOC_threshold;
+	this->ep.ini_SOC 	 = EP.ini_SOC;
+	this->ep.now_SOC 	 = EP.now_SOC;
+	this->ep.P_bat_max  = EP.P_bat_max;
+	this->ep.P_bat_min  = EP.P_bat_min;
+	this->ep.P_grid_max = EP.P_grid_max;
+	this->ep.real_time  = EP.real_time;
+	this->ep.Global_next_simulate_timeblock = EP.Global_next_simulate_timeblock;
+	this->ep.simulate_price = EP.simulate_price;
+}
+void OPTIMIZE::get_VR(MYSQL_FUNC::VARYING_LOAD VR)
+{
+	this->ep.time_block = EP.time_block;
+	this->ep.vess_cess  = EP.vess_cess;
+	this->ep.SOC_min    = EP.SOC_min;
+	this->ep.SOC_max    = EP.SOC_max;
+	this->ep.SOC_threshold = EP.SOC_threshold;
+	this->ep.ini_SOC 	 = EP.ini_SOC;
+	this->ep.now_SOC 	 = EP.now_SOC;
+	this->ep.P_bat_max  = EP.P_bat_max;
+	this->ep.P_bat_min  = EP.P_bat_min;
+	this->ep.P_grid_max = EP.P_grid_max;
+	this->ep.real_time  = EP.real_time;
+	this->ep.Global_next_simulate_timeblock = EP.Global_next_simulate_timeblock;
+	this->ep.simulate_price = EP.simulate_price;
+}
+
+
 
 void OPTIMIZE::set_Pgrid_col()
 {
@@ -276,6 +331,24 @@ void OPTIMIZE::set_Ppv_col()
 	}
 	
 }
+
+void OPTIMIZE::set_interrupt_row()
+{
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 void OPTIMIZE::outport_file()
 {

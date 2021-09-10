@@ -28,6 +28,9 @@ class MYSQL_FUNC
             double  P_grid_max;
             int real_time;
             int Global_next_simulate_timeblock;
+            int num_of_it_load;
+            int num_of_un_load;
+            int num_of_vr_load;
             std::string simulate_price;
             
         }EXPERIMENTAL_PARAMETERS;
@@ -50,8 +53,9 @@ class MYSQL_FUNC
             int group_id;
             int start_time;
             int end_time;
-            int operation_time;
+            int operation_time;//total operation time set by user
             int remain_op_time;
+            int already_op_time;
             float max_power;
             std::string equip_name;
         }INTERRUPT_LOAD;
@@ -63,6 +67,7 @@ class MYSQL_FUNC
             int end_time;
             int operation_time;
             int remain_op_time;
+            int already_op_time;
             float max_power;
             bool started_flag;
             std::string equip_name;
@@ -75,6 +80,7 @@ class MYSQL_FUNC
             int end_time;
             int operation_time;
             int remain_op_time;
+            int already_op_time;
             int op_time_block[3];
             float power_block[3];
             bool started_flag;
@@ -91,7 +97,6 @@ class MYSQL_FUNC
         VARYING_LOAD* varying_load;
      public:
         MYSQL_FUNC(std::string iP, std::string name, std::string passwd, std::string database);
-       // EXPERIMENTAL_PARAMETERS get_experimental_parameters();
         void get_experimental_parameters();
         void get_plan_flag();
         void get_load_model();//LD for loadmodel
