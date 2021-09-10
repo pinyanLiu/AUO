@@ -4,32 +4,30 @@
 #define delta_T 0.25
 
 
-OPTIMIZE::OPTIMIZE(char* prob_name,char* extremum,MYSQL_FUNC::EXPERIMENTAL_PARAMETERS EP,MYSQL_FUNC::PLAN_FLAG PF)
+OPTIMIZE::OPTIMIZE(MYSQL_FUNC::EXPERIMENTAL_PARAMETERS EP,MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF,MYSQL_FUNC::LOCAL_PLAN_FLAG LPF)
 {
 	
-	get_EP(EP);
+	get_EP(EP);	
 	interrupt_load = new INTERRUPT_LOAD[ep.num_of_it_load];
 	uninterrupt_load =  new UNINTERRUPT_LOAD[ep.num_of_ut_load];
 	varying_load = new VARYING_LOAD[ep.num_of_vr_load];
 	coefficient = NEW2D(Total_Row, Total_Col, double);
-	mip = glp_create_prob();
-/*
-	glp_set_prob_name(mip, prob_name);
-	if(extremum == "max" || extremum == "MAX")
-		glp_set_obj_dir(mip, GLP_MAX);
-	else if (extremum == "min" || extremum == "MIN")
-		glp_set_obj_dir(mip, GLP_MIN);
-//get remain time block
+	//get remain time block
 	cal_remain_timeblock();
-
-//construct glpk matrix
-
-	set_variable_name(PF);
+	set_variable_name(GPF,LPF);
 	cal_var_num();
 	cal_Total_Col();
 	cal_Total_Row();
+	set_problem("GHEMS","max");
 	glp_add_rows(mip, Total_Row);
 	glp_add_cols(mip, Total_Col);
+
+/*
+	
+
+//construct glpk matrix
+
+
 */
 }
 
@@ -42,22 +40,61 @@ OPTIMIZE::~OPTIMIZE()
 	glp_delete_prob(mip);
 }
 
-void OPTIMIZE::set_variable_name(MYSQL_FUNC::PLAN_FLAG PF)
+void OPTIMIZE::set_problem(char* prob_name,char* extremum)
 {
-    if (PF.Pgrid == 1)
+	mip = glp_create_prob();
+	glp_set_prob_name(mip, prob_name);
+	if(extremum == "max" || extremum == "MAX")
+		glp_set_obj_dir(mip, GLP_MAX);
+	else if (extremum == "min" || extremum == "MIN")
+		glp_set_obj_dir(mip, GLP_MIN);
+
+}
+
+
+void OPTIMIZE::set_variable_name(MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF,MYSQL_FUNC::LOCAL_PLAN_FLAG LPF)
+{
+	
+	if(LPF.interrupt)
+	{
+		for (int i =0 ; i < ep.num_of_it_load; i++)
+		{
+			variable_name.push_back("interrupt" + std::to_string(i + 1));
+		}		
+
+		
+	}
+	if(LPF.uninterrupt)
+	{
+		for (int i = 0; i < ep.num_of_ut_load; i++)
+		{
+			variable_name.push_back("uninterrupt" + std::to_string(i + 1));
+			variable_name.push_back("uninterrupt_Delta" + std::to_string(i + 1));
+		}
+	}
+	if(LPF.varying)
+	{
+		for (int i = 0; i < ep.num_of_vr_load; i++)
+		{
+			variable_name.push_back("varying" + std::to_string(i + 1));
+			variable_name.push_back("varying_Delta" + std::to_string(i + 1));
+			variable_name.push_back("varying_Psi" + std::to_string(i + 1));
+		}
+	}
+    if (GPF.Pgrid == 1)
 		variable_name.push_back("Pgrid");
-	if (PF.DR == 1)
+	if (GPF.DR == 1)
 		variable_name.push_back("mu_grid");
-	if (PF.Sell == 1)
+	if (GPF.Sell == 1)
 		variable_name.push_back("Psell");
-	if (PF.Pess == 1)
+	if (GPF.Pess == 1)
 	{
 		variable_name.push_back("Pess");
 		variable_name.push_back("Pcharge");
 		variable_name.push_back("Pdischarge");
 		variable_name.push_back("SOC");
 		variable_name.push_back("Z");
-		if (PF.SOC_change)
+		if (GPF.SOC_change)
 		{
 			variable_name.push_back("SOC_change");
 			variable_name.push_back("SOC_increase");
@@ -66,7 +103,7 @@ void OPTIMIZE::set_variable_name(MYSQL_FUNC::PLAN_FLAG PF)
 		}
 	}
 
-	/*if (PF.FC == 1)
+	/*if (GPF.FC == 1)
 	{
 		variable_name.push_back("Pfc");
 		variable_name.push_back("Pfct");
@@ -79,12 +116,12 @@ void OPTIMIZE::set_variable_name(MYSQL_FUNC::PLAN_FLAG PF)
 			variable_name.push_back("lambda_Pfc" + to_string(i + 1));
 	}*/
 	/*
-	if(PF.Comfort){
+	if(GPF.Comfort){
 
 	}
 	*/
 	
-	if(PF.PV){
+	if(GPF.PV){
 		variable_name.push_back("Ppv");
 	}
 	
@@ -121,68 +158,80 @@ void OPTIMIZE::cal_remain_timeblock()
 	#endif
 }
 
-void OPTIMIZE::set_obj(MYSQL_FUNC::PLAN_FLAG PF,std::vector<float> price)
+void OPTIMIZE::set_obj(MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF,std::vector<float> price)
 {
 	
 	for (int j = 0; j < remain_timeblock; j++)
 	{
-		if (PF.Pgrid)
+		if (GPF.Pgrid)
 			glp_set_obj_coef(mip, (find_variableName_position("Pgrid") + 1 + j * num_of_variable), price[j + ep.Global_next_simulate_timeblock] * delta_T);
 	/*	
-		if (PF.Sell)
+		if (GPF.Sell)
 			glp_set_obj_coef(mip, (find_variableName_position("Psell") + 1 + j * num_of_variable), price[j + sample_time] * delta_T * (-1));
 	
-		if (PF.FC)
+		if (GPF.FC)
 			glp_set_obj_coef(mip, (find_variableName_position("Pfct") + 1 + j * num_of_variable), Hydro_Price / Hydro_Cons * delta_T); //FC cost
 	*/
 	}
 	
 }
 
-void OPTIMIZE::set_col(MYSQL_FUNC::PLAN_FLAG PF)
+void OPTIMIZE::set_col(MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF,MYSQL_FUNC::LOCAL_PLAN_FLAG LPF)
 {
-	for(int i = 0; i<remain_timeblock;i++)
-	{
-		if(PF.Pgrid)
+		if(LPF.interrupt)
+		{
+			set_interrupt_col();
+		}
+
+		if(LPF.uninterrupt)
+		{
+			set_uninterrupt_col();
+		}
+
+		if(LPF.varying)
+		{
+			set_varying_col();
+		}
+
+		if(GPF.Pgrid)
 		{
 			set_Pgrid_col();
 		}
 
-		if(PF.PV)
+		if(GPF.PV)
 		{
 			set_Ppv_col();
 		}
 /*
-		else if (PF.FC)
+		else if (GPF.FC)
 		{
 
 		}
 */
-		if (PF.Pess)
+		if (GPF.Pess)
 		{
 			set_Pess_col();
-				if (PF.SOC_change)
+				if (GPF.SOC_change)
 				{
 					set_Pess_change_col();
 				}
 		}
 /*
-		else if (PF.Sell)
+		else if (GPF.Sell)
 		{
 			set_Psell_col();
 		}
 
-		else if (PF.DR)
+		else if (GPF.DR)
 		{
 
 		}
-		else if (PF.Comfort)
+		else if (GPF.Comfort)
 		{
 
 		}
 */
 
-	}
 }
 
 
@@ -260,8 +309,58 @@ void OPTIMIZE::get_VR(MYSQL_FUNC::VARYING_LOAD* VR)
 		this->varying_load[i].equip_name = VR[i].equip_name;
 	}
 }
+void OPTIMIZE::set_interrupt_col()
+{
+	for (int i = 0; i < remain_timeblock; i++)
+	{
+		for (int j = 0 ; j < ep.num_of_it_load; j++)
+		{
+			glp_set_col_name(mip, (find_variableName_position("interrupt" + std::to_string(j+1)) + 1 + i * num_of_variable),("interrupt"+std::to_string(ep.Global_next_simulate_timeblock+i)+"-"+std::to_string(j+1)).c_str());
+			
+			glp_set_col_bnds(mip, (find_variableName_position("interrupt" + std::to_string(j+1)) + 1 + i * num_of_variable), GLP_DB, 0.0, 1.0);
+			
+			glp_set_col_kind(mip, (find_variableName_position("interrupt" + std::to_string(j+1)) + 1 + i * num_of_variable), GLP_BV);
+		}
+
+	}
+	
+
+}
+void OPTIMIZE::set_uninterrupt_col()
+{
+	for (int i = 0; i < remain_timeblock; i++)
+	{
+		for (int j = 0; j < ep.num_of_ut_load; j++)
+		{
+			glp_set_col_name(mip, (find_variableName_position("uninterrupt" + std::to_string(j+1)) + 1 + i * num_of_variable),("uninterrupt"+std::to_string(ep.Global_next_simulate_timeblock+i)+"-"+std::to_string(j+1)).c_str());
+			
+			glp_set_col_bnds(mip, (find_variableName_position("uninterrupt" + std::to_string(j+1)) + 1 + i * num_of_variable), GLP_DB, 0.0, 1.0);
+			
+			glp_set_col_kind(mip, (find_variableName_position("uninterrupt" + std::to_string(j+1)) + 1 + i * num_of_variable), GLP_BV);
+		}
+
+	}
+	
 
 
+}
+void OPTIMIZE::set_varying_col()
+{
+	for (int i = 0; i < remain_timeblock; i++)
+	{
+		for (int j = 0; j < ep.num_of_vr_load; j++)
+		{
+			glp_set_col_name(mip, (find_variableName_position("varying" + std::to_string(j+1)) + 1 + i * num_of_variable),("varying"+std::to_string(ep.Global_next_simulate_timeblock+i)+"-"+std::to_string(j+1)).c_str());
+			
+			glp_set_col_bnds(mip, (find_variableName_position("varying" + std::to_string(j+1)) + 1 + i * num_of_variable), GLP_DB, 0.0, 1.0);
+			
+			glp_set_col_kind(mip, (find_variableName_position("varying" + std::to_string(j+1)) + 1 + i * num_of_variable), GLP_BV);
+		}
+
+	}
+	
+
+}
 
 void OPTIMIZE::set_Pgrid_col()
 {
@@ -347,7 +446,7 @@ void OPTIMIZE::set_Ppv_col()
 
 void OPTIMIZE::set_interrupt_row()
 {
-
+	
 
 }
 

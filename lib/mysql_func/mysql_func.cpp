@@ -10,7 +10,8 @@ MYSQL_FUNC::MYSQL_FUNC(std::string iP, std::string name, std::string passwd, std
 	uninterrupt_load =  new UNINTERRUPT_LOAD[num_ut];
 	varying_load = new VARYING_LOAD[num_vr];
 	get_experimental_parameters();
-	get_plan_flag();
+	get_local_plan_flag();
+	get_global_plan_flag();
 //	get_load_model();
 //	get_price();
 }
@@ -61,31 +62,44 @@ void MYSQL_FUNC::get_experimental_parameters()
 	this->ep.num_of_vr_load = num_vr;
 }
 
-void MYSQL_FUNC::get_plan_flag()
+void MYSQL_FUNC::get_global_plan_flag()
 {
 	mysql_lib->operate("SELECT flag FROM GHEMS_flag WHERE variable_name = 'Pgrid'");
-	this->pf.Pgrid = mysql_lib->getRow_and_atoi();
+	this->gpf.Pgrid = mysql_lib->getRow_and_atoi();
 
 	mysql_lib->operate("SELECT flag FROM GHEMS_flag WHERE variable_name = 'PV'");
-	this->pf.PV = mysql_lib->getRow_and_atoi();
+	this->gpf.PV = mysql_lib->getRow_and_atoi();
 
 	mysql_lib->operate("SELECT flag FROM GHEMS_flag WHERE variable_name = 'FC'");
-	this->pf.FC = mysql_lib->getRow_and_atoi();
+	this->gpf.FC = mysql_lib->getRow_and_atoi();
 
 	mysql_lib->operate("SELECT flag FROM GHEMS_flag WHERE variable_name = 'Pess'");
-	this->pf.Pess = mysql_lib->getRow_and_atoi();
+	this->gpf.Pess = mysql_lib->getRow_and_atoi();
 
 	mysql_lib->operate("SELECT flag FROM GHEMS_flag WHERE variable_name = 'Sell'");
-	this->pf.Sell = mysql_lib->getRow_and_atoi();
+	this->gpf.Sell = mysql_lib->getRow_and_atoi();
 
 	mysql_lib->operate("SELECT flag FROM GHEMS_flag WHERE variable_name = 'SOC_change'");
-	this->pf.SOC_change = mysql_lib->getRow_and_atoi();
+	this->gpf.SOC_change = mysql_lib->getRow_and_atoi();
 
 	mysql_lib->operate("SELECT flag FROM GHEMS_flag WHERE variable_name = 'DR'");
-	this->pf.DR = mysql_lib->getRow_and_atoi();
+	this->gpf.DR = mysql_lib->getRow_and_atoi();
 
 	mysql_lib->operate("SELECT flag FROM GHEMS_flag WHERE variable_name = 'Comfort'");
-	this->pf.Comfort = mysql_lib->getRow_and_atoi();
+	this->gpf.Comfort = mysql_lib->getRow_and_atoi();
+}
+
+void MYSQL_FUNC::get_local_plan_flag()
+{
+	mysql_lib->operate("SELECT flag FROM LHEMS_flag WHERE variable_name = 'interrupt'");
+	this->lpf.interrupt = mysql_lib->getRow_and_atoi();
+
+	mysql_lib->operate("SELECT flag FROM LHEMS_flag WHERE variable_name = 'uninterrupt'");
+	this->lpf.uninterrupt = mysql_lib->getRow_and_atoi();
+
+	mysql_lib->operate("SELECT flag FROM LHEMS_flag WHERE variable_name = 'varying'");
+	this->lpf.varying = mysql_lib->getRow_and_atoi();
+
 }
 
 void MYSQL_FUNC::get_load_model()

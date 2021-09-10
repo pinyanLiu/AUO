@@ -90,7 +90,11 @@ public:
     void cal_Total_Row();
     void cal_Total_Col();
     void get_EP(MYSQL_FUNC::EXPERIMENTAL_PARAMETERS EP); //get EP data from myql_func 
+    void set_problem(char* prob_name,char* extremum);
     // --------- SET EACH COLUMN CONSTRAINTS FUNCS --------- //
+    void set_interrupt_col();
+    void set_uninterrupt_col();
+    void set_varying_col();
     void set_Pgrid_col();
     void set_Psell_col();
     void set_Pess_col();
@@ -105,12 +109,12 @@ public:
 
 public:
     std::vector<std::string> variable_name;
-    OPTIMIZE(char* prob_name,char* extremum,MYSQL_FUNC::EXPERIMENTAL_PARAMETERS EP,MYSQL_FUNC::PLAN_FLAG PF);
+    OPTIMIZE(MYSQL_FUNC::EXPERIMENTAL_PARAMETERS EP,MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF,MYSQL_FUNC::LOCAL_PLAN_FLAG LPF);
     ~OPTIMIZE();
-    void set_variable_name(MYSQL_FUNC::PLAN_FLAG PF);//push variable under each situation
-    void set_constraint_matrix(MYSQL_FUNC::PLAN_FLAG PF);//set whole row,include balanced function and restricted function
-    void set_col(MYSQL_FUNC::PLAN_FLAG PF);//set whole variable constraint
-    void set_obj(MYSQL_FUNC::PLAN_FLAG PF,std::vector<float> price);//set objective function
+    void set_variable_name(MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF,MYSQL_FUNC::LOCAL_PLAN_FLAG LPF);//push variable under each situation
+    void set_constraint_matrix(MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF);//set whole row,include balanced function and restricted function
+    void set_col(MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF,MYSQL_FUNC::LOCAL_PLAN_FLAG LPF);//set whole variable constraint
+    void set_obj(MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF,std::vector<float> price);//set objective function
     void set_cal_parm();//set the calculation method and parameter
     void outport_file();
     void get_IT(MYSQL_FUNC::INTERRUPT_LOAD* IT);//get interrupted load data from mysql_func

@@ -45,7 +45,15 @@ class MYSQL_FUNC
             bool DR;
             bool Comfort;
             bool SOC_change;//for limiting battery has to discharge at least 80% per day.
-        }PLAN_FLAG;
+        }GLOBAL_PLAN_FLAG;
+
+        typedef struct 
+        {
+            bool interrupt;
+            bool uninterrupt;
+            bool varying;
+        }LOCAL_PLAN_FLAG;
+        
 
         typedef struct 
         {
@@ -91,14 +99,16 @@ class MYSQL_FUNC
         std::vector<int> load_model;
         std::vector<float> price;
         EXPERIMENTAL_PARAMETERS ep;//ep for EXPERIMENTAL_PARAMETERS
-        PLAN_FLAG pf;//pf for PLAN_FLAG
+        GLOBAL_PLAN_FLAG gpf;//gpf for GLOBAL_PLAN_FLAG
+        LOCAL_PLAN_FLAG lpf;//lpf for LOCAL_PLAN_FLAG
         INTERRUPT_LOAD *interrupt_load;
         UNINTERRUPT_LOAD* uninterrupt_load;
         VARYING_LOAD* varying_load;
      public:
         MYSQL_FUNC(std::string iP, std::string name, std::string passwd, std::string database);
         void get_experimental_parameters();
-        void get_plan_flag();
+        void get_global_plan_flag();
+        void get_local_plan_flag();
         void get_load_model();//LD for loadmodel
         void get_price();//PRICE for .......PRICE
         void get_interrupt_data();

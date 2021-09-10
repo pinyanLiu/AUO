@@ -6,16 +6,21 @@ using namespace std;
 int main(){
 
 MYSQL_FUNC mysql_func("140.124.42.65","root", "fuzzy314", "Hems_lib");
-mysql_func.get_interrupt_data();
+OPTIMIZE opt(mysql_func.ep,mysql_func.gpf,mysql_func.lpf);
+opt.set_col(mysql_func.gpf,mysql_func.lpf);
 
-mysql_func.get_uninterrupt_data();
-mysql_func.get_varying_data();
+for (size_t i = 0; i < opt.variable_name.size(); i++)
+{
+	cout<<opt.variable_name[i]<<" ";
+}
+cout<<endl;
 
-OPTIMIZE opt("GHEMS","max",mysql_func.ep,mysql_func.pf);
-opt.get_IT(mysql_func.interrupt_load);
-	opt.get_UT(mysql_func.uninterrupt_load);
-	opt.get_VR(mysql_func.varying_load);
-/*
+
+
+
+#ifdef DEBUG1
+
+
 for (size_t i = 0; i < 12; i++)
 {
 cout<<"id = "<<opt.interrupt_load[i].id<<" ";
@@ -40,7 +45,7 @@ cout<<"max_power = "<<opt.uninterrupt_load[i].max_power<<" ";
 cout<<"equip_name = "<<opt.uninterrupt_load[i].equip_name;
 cout<<endl;
 }
-*/
+
 
 for (size_t i = 0; i < 1; i++)
 {
@@ -58,9 +63,6 @@ cout<<"op_time_block[2] = "<<opt.varying_load[i].op_time_block[2]<<" ";
 cout<<"equip_name = "<<opt.varying_load[i].equip_name;
 cout<<endl;
 }	
-
-
-#ifdef DEBUG1
 
 
 for (size_t i = 0; i < 12; i++)
