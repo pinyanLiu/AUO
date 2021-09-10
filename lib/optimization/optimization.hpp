@@ -12,7 +12,7 @@
 
 class OPTIMIZE
 {
-private:
+public:
 
     typedef struct 
         {
@@ -30,7 +30,7 @@ private:
             int Global_next_simulate_timeblock;
             std::string simulate_price;
             int num_of_it_load;
-            int num_of_un_load;
+            int num_of_ut_load;
             int num_of_vr_load;
             
         }EXPERIMENTAL_PARAMETERS;
@@ -75,9 +75,7 @@ private:
             std::string equip_name;
         }VARYING_LOAD;
     
-    INTERRUPT_LOAD* interrupt_load;
-    UNINTERRUPT_LOAD* uninterrupt_load;
-    VARYING_LOAD* varying_load;
+
     EXPERIMENTAL_PARAMETERS ep;
     glp_prob* mip;
     int num_of_variable;
@@ -92,9 +90,6 @@ private:
     void cal_Total_Row();
     void cal_Total_Col();
     void get_EP(MYSQL_FUNC::EXPERIMENTAL_PARAMETERS EP); //get EP data from myql_func 
-    void get_IT(MYSQL_FUNC::INTERRUPT_LOAD IT);//get interrupted load data from mysql_func
-    void get_UT(MYSQL_FUNC::UNINTERRUPT_LOAD UT);//get uninterrupted load data from mysql_func
-    void get_VR(MYSQL_FUNC::VARYING_LOAD VR);//get varying load data from mysql_func
     // --------- SET EACH COLUMN CONSTRAINTS FUNCS --------- //
     void set_Pgrid_col();
     void set_Psell_col();
@@ -118,6 +113,12 @@ public:
     void set_obj(MYSQL_FUNC::PLAN_FLAG PF,std::vector<float> price);//set objective function
     void set_cal_parm();//set the calculation method and parameter
     void outport_file();
+    void get_IT(MYSQL_FUNC::INTERRUPT_LOAD* IT);//get interrupted load data from mysql_func
+    void get_UT(MYSQL_FUNC::UNINTERRUPT_LOAD* UT);//get uninterrupted load data from mysql_func
+    void get_VR(MYSQL_FUNC::VARYING_LOAD* VR);//get varying load data from mysql_func
+    INTERRUPT_LOAD* interrupt_load;
+    UNINTERRUPT_LOAD* uninterrupt_load;
+    VARYING_LOAD* varying_load;
 
 private:
     int find_variableName_position(std::string target);

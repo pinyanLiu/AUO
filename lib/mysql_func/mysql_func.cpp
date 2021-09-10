@@ -9,13 +9,12 @@ MYSQL_FUNC::MYSQL_FUNC(std::string iP, std::string name, std::string passwd, std
 	interrupt_load = new INTERRUPT_LOAD[num_it];
 	uninterrupt_load =  new UNINTERRUPT_LOAD[num_ut];
 	varying_load = new VARYING_LOAD[num_vr];
-//	get_experimental_parameters();
-//	get_plan_flag();
+	get_experimental_parameters();
+	get_plan_flag();
 //	get_load_model();
 //	get_price();
 }
 
-//MYSQL_FUNC::EXPERIMENTAL_PARAMETERS MYSQL_FUNC::get_experimental_parameters()
 void MYSQL_FUNC::get_experimental_parameters()
 {
 	mysql_lib->operate("SELECT value FROM AUO_BaseParameter WHERE parameter_name = 'time_block'");
@@ -58,7 +57,7 @@ void MYSQL_FUNC::get_experimental_parameters()
 	this->ep.simulate_price = mysql_lib->getRow_string();
 
 	this->ep.num_of_it_load = num_it;
-	this->ep.num_of_un_load = num_ut;
+	this->ep.num_of_ut_load = num_ut;
 	this->ep.num_of_vr_load = num_vr;
 }
 

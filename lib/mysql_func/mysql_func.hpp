@@ -29,7 +29,7 @@ class MYSQL_FUNC
             int real_time;
             int Global_next_simulate_timeblock;
             int num_of_it_load;
-            int num_of_un_load;
+            int num_of_ut_load;
             int num_of_vr_load;
             std::string simulate_price;
             
@@ -92,7 +92,7 @@ class MYSQL_FUNC
         std::vector<float> price;
         EXPERIMENTAL_PARAMETERS ep;//ep for EXPERIMENTAL_PARAMETERS
         PLAN_FLAG pf;//pf for PLAN_FLAG
-        INTERRUPT_LOAD* interrupt_load;
+        INTERRUPT_LOAD *interrupt_load;
         UNINTERRUPT_LOAD* uninterrupt_load;
         VARYING_LOAD* varying_load;
      public:

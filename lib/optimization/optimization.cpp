@@ -6,8 +6,14 @@
 
 OPTIMIZE::OPTIMIZE(char* prob_name,char* extremum,MYSQL_FUNC::EXPERIMENTAL_PARAMETERS EP,MYSQL_FUNC::PLAN_FLAG PF)
 {
+	
 	get_EP(EP);
+	interrupt_load = new INTERRUPT_LOAD[ep.num_of_it_load];
+	uninterrupt_load =  new UNINTERRUPT_LOAD[ep.num_of_ut_load];
+	varying_load = new VARYING_LOAD[ep.num_of_vr_load];
+	coefficient = NEW2D(Total_Row, Total_Col, double);
 	mip = glp_create_prob();
+/*
 	glp_set_prob_name(mip, prob_name);
 	if(extremum == "max" || extremum == "MAX")
 		glp_set_obj_dir(mip, GLP_MAX);
@@ -22,14 +28,16 @@ OPTIMIZE::OPTIMIZE(char* prob_name,char* extremum,MYSQL_FUNC::EXPERIMENTAL_PARAM
 	cal_var_num();
 	cal_Total_Col();
 	cal_Total_Row();
-	coefficient = NEW2D(Total_Row, Total_Col, double);
 	glp_add_rows(mip, Total_Row);
 	glp_add_cols(mip, Total_Col);
-
+*/
 }
 
 OPTIMIZE::~OPTIMIZE()
 {
+	delete []interrupt_load;
+	delete []uninterrupt_load;
+	delete []varying_load;
 	delete []coefficient;
 	glp_delete_prob(mip);
 }
@@ -194,58 +202,63 @@ void OPTIMIZE::get_EP(MYSQL_FUNC::EXPERIMENTAL_PARAMETERS EP)
 	this->ep.Global_next_simulate_timeblock = EP.Global_next_simulate_timeblock;
 	this->ep.simulate_price = EP.simulate_price;
 	this->ep.num_of_it_load = EP.num_of_it_load;
-	this->ep.num_of_un_load = EP.num_of_un_load;
+	this->ep.num_of_ut_load = EP.num_of_ut_load;
 	this->ep.num_of_vr_load = EP.num_of_vr_load;
 
 }
 
-void OPTIMIZE::get_IT(MYSQL_FUNC::INTERRUPT_LOAD IT)
+void OPTIMIZE::get_IT(MYSQL_FUNC::INTERRUPT_LOAD* IT)
 {
-	this->interrupt_load.id = IT.id;
-	this->interrupt_load.group_id  = IT.group_id;
-	this->interrupt_load.SOC_min    = IT.SOC_min;
-	this->interrupt_load.SOC_max    = IT.SOC_max;
-	this->interrupt_load.SOC_threshold = IT.SOC_threshold;
-	this->interrupt_load.ini_SOC 	 = IT.ini_SOC;
-	this->interrupt_load.now_SOC 	 = IT.now_SOC;
-	this->interrupt_load.P_bat_max  = IT.P_bat_max;
-	this->interrupt_load.P_bat_min  = IT.P_bat_min;
-	this->interrupt_load.P_grid_max = IT.P_grid_max;
-	this->interrupt_load.real_time  = IT.real_time;
-	this->interrupt_load.Global_next_simulate_timeblock = IT.Global_next_simulate_timeblock;
-	this->interrupt_load.simulate_price = IT.simulate_price;
+	for (size_t i = 0; i < ep.num_of_it_load; i++)
+	{
+		this->interrupt_load[i].id = IT[i].id;
+		this->interrupt_load[i].group_id = IT[i].group_id;
+		this->interrupt_load[i].start_time = IT[i].start_time;
+		this->interrupt_load[i].end_time = IT[i].end_time;
+		this->interrupt_load[i].operation_time = IT[i].operation_time;
+		this->interrupt_load[i].remain_op_time = IT[i].remain_op_time;
+		this->interrupt_load[i].already_op_time = IT[i].already_op_time;
+		this->interrupt_load[i].max_power = IT[i].max_power;	
+		this->interrupt_load[i].equip_name = IT[i].equip_name;
+
+	}
+	
+	
 }
-void OPTIMIZE::get_UT(MYSQL_FUNC::UNINTERRUPT_LOAD UT)
+void OPTIMIZE::get_UT(MYSQL_FUNC::UNINTERRUPT_LOAD* UT)
 {
-	this->ep.time_block = EP.time_block;
-	this->ep.vess_cess  = EP.vess_cess;
-	this->ep.SOC_min    = EP.SOC_min;
-	this->ep.SOC_max    = EP.SOC_max;
-	this->ep.SOC_threshold = EP.SOC_threshold;
-	this->ep.ini_SOC 	 = EP.ini_SOC;
-	this->ep.now_SOC 	 = EP.now_SOC;
-	this->ep.P_bat_max  = EP.P_bat_max;
-	this->ep.P_bat_min  = EP.P_bat_min;
-	this->ep.P_grid_max = EP.P_grid_max;
-	this->ep.real_time  = EP.real_time;
-	this->ep.Global_next_simulate_timeblock = EP.Global_next_simulate_timeblock;
-	this->ep.simulate_price = EP.simulate_price;
+	for (size_t i = 0; i < ep.num_of_ut_load; i++)
+	{
+		this->uninterrupt_load[i].id = UT[i].id;
+		this->uninterrupt_load[i].group_id = UT[i].group_id;
+		this->uninterrupt_load[i].start_time = UT[i].start_time;
+		this->uninterrupt_load[i].end_time = UT[i].end_time;
+		this->uninterrupt_load[i].operation_time = UT[i].operation_time;
+		this->uninterrupt_load[i].remain_op_time = UT[i].remain_op_time;
+		this->uninterrupt_load[i].already_op_time = UT[i].already_op_time;
+		this->uninterrupt_load[i].max_power = UT[i].max_power;	
+		this->uninterrupt_load[i].equip_name = UT[i].equip_name;
+
+	}
 }
-void OPTIMIZE::get_VR(MYSQL_FUNC::VARYING_LOAD VR)
+void OPTIMIZE::get_VR(MYSQL_FUNC::VARYING_LOAD* VR)
 {
-	this->ep.time_block = EP.time_block;
-	this->ep.vess_cess  = EP.vess_cess;
-	this->ep.SOC_min    = EP.SOC_min;
-	this->ep.SOC_max    = EP.SOC_max;
-	this->ep.SOC_threshold = EP.SOC_threshold;
-	this->ep.ini_SOC 	 = EP.ini_SOC;
-	this->ep.now_SOC 	 = EP.now_SOC;
-	this->ep.P_bat_max  = EP.P_bat_max;
-	this->ep.P_bat_min  = EP.P_bat_min;
-	this->ep.P_grid_max = EP.P_grid_max;
-	this->ep.real_time  = EP.real_time;
-	this->ep.Global_next_simulate_timeblock = EP.Global_next_simulate_timeblock;
-	this->ep.simulate_price = EP.simulate_price;
+	for (size_t i = 0; i < ep.num_of_vr_load; i++)
+	{
+		this->varying_load[i].id = VR[i].id;
+		this->varying_load[i].group_id = VR[i].group_id;
+		this->varying_load[i].start_time = VR[i].start_time;
+		this->varying_load[i].end_time = VR[i].end_time;
+		this->varying_load[i].operation_time = VR[i].operation_time;
+		this->varying_load[i].remain_op_time = VR[i].remain_op_time;
+		this->varying_load[i].already_op_time = VR[i].already_op_time;
+		for (size_t j = 0; j < 3; j++)
+		{
+			this->varying_load[i].op_time_block[j] = VR[i].op_time_block[j];
+			this->varying_load[i].power_block[j] = VR[i].power_block[j];
+		}
+		this->varying_load[i].equip_name = VR[i].equip_name;
+	}
 }
 
 
