@@ -12,15 +12,16 @@ OPTIMIZE::OPTIMIZE(MYSQL_FUNC::EXPERIMENTAL_PARAMETERS EP,MYSQL_FUNC::GLOBAL_PLA
 	uninterrupt_load =  new UNINTERRUPT_LOAD[ep.num_of_ut_load];
 	varying_load = new VARYING_LOAD[ep.num_of_vr_load];
 	coefficient = NEW2D(Total_Row, Total_Col, double);
-	//get remain time block
-	cal_remain_timeblock();
+	cal_remain_timeblock();	//get remain time block
 	set_variable_name(GPF,LPF);
 	cal_var_num();
 	cal_Total_Col();
 	cal_Total_Row();
-	set_problem("GHEMS","max");
+	//glpk part
+	set_problem("GHEMS","min");
 	glp_add_rows(mip, Total_Row);
 	glp_add_cols(mip, Total_Col);
+	//glp_create_index(mip);
 
 /*
 	
@@ -158,13 +159,131 @@ void OPTIMIZE::cal_remain_timeblock()
 	#endif
 }
 
+void OPTIMIZE::set_constraint_matrix(MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF,MYSQL_FUNC::LOCAL_PLAN_FLAG LPF)
+{
+	if(LPF.interrupt)
+		{
+			set_interrupt_coeff();
+		}
+/*
+		if(LPF.uninterrupt)
+		{
+			set_uninterrupt_row();
+		}
+
+		if(LPF.varying)
+		{
+			set_varying_row();
+		}
+
+		if(GPF.Pgrid)
+		{
+			set_Pgrid_row();
+		}
+
+		if(GPF.PV)
+		{
+			set_Ppv_row();
+		}
+
+		else if (GPF.FC)
+		{
+
+		}
+
+		if (GPF.Pess)
+		{
+			set_Pess_row();
+				if (GPF.SOC_change)
+				{
+					set_Pess_change_row();
+				}
+		}
+
+		else if (GPF.Sell)
+		{
+			set_Psell_row();
+		}
+
+		else if (GPF.DR)
+		{
+
+		}
+		else if (GPF.Comfort)
+		{
+
+		}
+*/
+}
+
+void OPTIMIZE::set_row(MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF,MYSQL_FUNC::LOCAL_PLAN_FLAG LPF)
+{
+		if(LPF.interrupt)
+		{
+			set_interrupt_row();
+		}
+
+		if(LPF.uninterrupt)
+		{
+			set_uninterrupt_row();
+		}
+
+		if(LPF.varying)
+		{
+			set_varying_row();
+		}
+/*
+		if(GPF.Pgrid)
+		{
+			set_Pgrid_row();
+		}
+
+		if(GPF.PV)
+		{
+			set_Ppv_row();
+		}
+
+		else if (GPF.FC)
+		{
+
+		}
+
+		if (GPF.Pess)
+		{
+			set_Pess_row();
+				if (GPF.SOC_change)
+				{
+					set_Pess_change_row();
+				}
+		}
+
+		else if (GPF.Sell)
+		{
+			set_Psell_row();
+		}
+
+		else if (GPF.DR)
+		{
+
+		}
+		else if (GPF.Comfort)
+		{
+
+		}
+*/
+
+}
+
+
 void OPTIMIZE::set_obj(MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF,std::vector<float> price)
 {
 	
 	for (int j = 0; j < remain_timeblock; j++)
 	{
 		if (GPF.Pgrid)
+		{			
 			glp_set_obj_coef(mip, (find_variableName_position("Pgrid") + 1 + j * num_of_variable), price[j + ep.Global_next_simulate_timeblock] * delta_T);
+		}
 	/*	
 		if (GPF.Sell)
 			glp_set_obj_coef(mip, (find_variableName_position("Psell") + 1 + j * num_of_variable), price[j + sample_time] * delta_T * (-1));
@@ -265,8 +384,8 @@ void OPTIMIZE::get_IT(MYSQL_FUNC::INTERRUPT_LOAD* IT)
 		this->interrupt_load[i].start_time = IT[i].start_time;
 		this->interrupt_load[i].end_time = IT[i].end_time;
 		this->interrupt_load[i].operation_time = IT[i].operation_time;
-		this->interrupt_load[i].remain_op_time = IT[i].remain_op_time;
-		this->interrupt_load[i].already_op_time = IT[i].already_op_time;
+		this->interrupt_load[i].remain_op_time = IT[i].operation_time;
+		this->interrupt_load[i].already_op_time = 0;
 		this->interrupt_load[i].max_power = IT[i].max_power;	
 		this->interrupt_load[i].equip_name = IT[i].equip_name;
 
@@ -283,8 +402,8 @@ void OPTIMIZE::get_UT(MYSQL_FUNC::UNINTERRUPT_LOAD* UT)
 		this->uninterrupt_load[i].start_time = UT[i].start_time;
 		this->uninterrupt_load[i].end_time = UT[i].end_time;
 		this->uninterrupt_load[i].operation_time = UT[i].operation_time;
-		this->uninterrupt_load[i].remain_op_time = UT[i].remain_op_time;
-		this->uninterrupt_load[i].already_op_time = UT[i].already_op_time;
+		this->uninterrupt_load[i].remain_op_time = UT[i].operation_time;
+		this->uninterrupt_load[i].already_op_time = 0;
 		this->uninterrupt_load[i].max_power = UT[i].max_power;	
 		this->uninterrupt_load[i].equip_name = UT[i].equip_name;
 
@@ -299,8 +418,8 @@ void OPTIMIZE::get_VR(MYSQL_FUNC::VARYING_LOAD* VR)
 		this->varying_load[i].start_time = VR[i].start_time;
 		this->varying_load[i].end_time = VR[i].end_time;
 		this->varying_load[i].operation_time = VR[i].operation_time;
-		this->varying_load[i].remain_op_time = VR[i].remain_op_time;
-		this->varying_load[i].already_op_time = VR[i].already_op_time;
+		this->varying_load[i].remain_op_time = VR[i].operation_time;
+		this->varying_load[i].already_op_time = 0;
 		for (size_t j = 0; j < 3; j++)
 		{
 			this->varying_load[i].op_time_block[j] = VR[i].op_time_block[j];
@@ -337,6 +456,12 @@ void OPTIMIZE::set_uninterrupt_col()
 			glp_set_col_bnds(mip, (find_variableName_position("uninterrupt" + std::to_string(j+1)) + 1 + i * num_of_variable), GLP_DB, 0.0, 1.0);
 			
 			glp_set_col_kind(mip, (find_variableName_position("uninterrupt" + std::to_string(j+1)) + 1 + i * num_of_variable), GLP_BV);
+//uninterrupted delta
+			glp_set_col_name(mip, (find_variableName_position("uninterrupt_Delta" + std::to_string(j+1)) + 1 + i * num_of_variable),("uninterrupt_Delta"+std::to_string(ep.Global_next_simulate_timeblock+i)+"-"+std::to_string(j+1)).c_str());
+			
+			glp_set_col_bnds(mip, (find_variableName_position("uninterrupt_Delta" + std::to_string(j+1)) + 1 + i * num_of_variable), GLP_DB, 0.0, 1.0);
+			
+			glp_set_col_kind(mip, (find_variableName_position("uninterrupt_Delta" + std::to_string(j+1)) + 1 + i * num_of_variable), GLP_BV);
 		}
 
 	}
@@ -355,6 +480,19 @@ void OPTIMIZE::set_varying_col()
 			glp_set_col_bnds(mip, (find_variableName_position("varying" + std::to_string(j+1)) + 1 + i * num_of_variable), GLP_DB, 0.0, 1.0);
 			
 			glp_set_col_kind(mip, (find_variableName_position("varying" + std::to_string(j+1)) + 1 + i * num_of_variable), GLP_BV);
+
+			glp_set_col_name(mip, (find_variableName_position("varying_Delta" + std::to_string(j+1)) + 1 + i * num_of_variable),("varying_Delta"+std::to_string(ep.Global_next_simulate_timeblock+i)+"-"+std::to_string(j+1)).c_str());
+			
+			glp_set_col_bnds(mip, (find_variableName_position("varying_Delta" + std::to_string(j+1)) + 1 + i * num_of_variable), GLP_DB, 0.0, 1.0);
+			
+			glp_set_col_kind(mip, (find_variableName_position("varying_Delta" + std::to_string(j+1)) + 1 + i * num_of_variable), GLP_BV);
+
+			glp_set_col_name(mip, (find_variableName_position("varying_Psi" + std::to_string(j+1)) + 1 + i * num_of_variable),("varying_Psi"+std::to_string(ep.Global_next_simulate_timeblock+i)+"-"+std::to_string(j+1)).c_str());
+
+
+			glp_set_col_bnds(mip, (find_variableName_position("varying_Psi" + std::to_string(j+1)) + 1 + i * num_of_variable), GLP_DB, 0.0, 0.6);//0.6 is max of varying load power ,i'll rewrite later
+			
+			glp_set_col_kind(mip, (find_variableName_position("varying_Psi" + std::to_string(j+1)) + 1 + i * num_of_variable), GLP_CV);
 		}
 
 	}
@@ -446,12 +584,57 @@ void OPTIMIZE::set_Ppv_col()
 
 void OPTIMIZE::set_interrupt_row()
 {
-	
-
+	for (int i = 0; i <ep.num_of_it_load ; i++)
+	{
+		glp_set_row_name(mip, bnd_row_num + i, ("interrupt_"+std::to_string(i+1)+" total op_time > remain_op_time(Qa)").c_str());
+		glp_set_row_bnds(mip, bnd_row_num + i, GLP_LO, interrupt_load[i].remain_op_time, 0.0);
+	}
+	bnd_row_num += ep.num_of_it_load;
 }
 
+void OPTIMIZE::set_uninterrupt_row()
+{
+	for (int i = 0; i <ep.num_of_it_load ; i++)
+	{
+		glp_set_row_name(mip, bnd_row_num + i, ("interrupt_"+std::to_string(i+1)+" total op_time > remain_op_time(Qa)").c_str());
+		glp_set_row_bnds(mip, bnd_row_num + i, GLP_LO, interrupt_load[i].remain_op_time, 0.0);
+	}
+	
+}
 
+void OPTIMIZE::set_varying_row()
+{
+	for (int i = 0; i <ep.num_of_it_load ; i++)
+	{
+		glp_set_row_name(mip, bnd_row_num + i, ("interrupt_"+std::to_string(i+1)+" total op_time > remain_op_time(Qa)").c_str());
+		glp_set_row_bnds(mip, bnd_row_num + i, GLP_LO, interrupt_load[i].remain_op_time, 0.0);
+	}
+	
+}
 
+void OPTIMIZE::set_interrupt_coeff()
+{
+	for (int h = 0; h < ep.num_of_it_load; h++)
+	{
+		if ((interrupt_load[h].end_time - ep.Global_next_simulate_timeblock) >= 0)
+		{
+			if ((interrupt_load[h].start_time - ep.Global_next_simulate_timeblock) >= 0)
+			{
+				for (int i = (interrupt_load[h].start_time - ep.Global_next_simulate_timeblock); i <= (interrupt_load[h].end_time - ep.Global_next_simulate_timeblock); i++)
+				{
+					coefficient[glp_find_row(mip,("interrupt_"+std::to_string(h+1)+" total op_time > remain_op_time(Qa)").c_str())][i * num_of_variable + find_variableName_position( "interrupt" + std::to_string(h + 1))] = 1.0;
+				}
+			}
+			else if ((interrupt_load[h].start_time - ep.Global_next_simulate_timeblock) < 0)
+			{
+				for (int i = 0; i <= (interrupt_load[h].end_time - ep.Global_next_simulate_timeblock); i++)
+				{
+					coefficient[glp_find_row(mip,("interrupt_"+std::to_string(h+1)+" total op_time > remain_op_time(Qa)").c_str())][i * num_of_variable + find_variableName_position( "interrupt" + std::to_string(h + 1))] = 1.0;
+				}
+			}
+		}
+	}
+}
 
 
 

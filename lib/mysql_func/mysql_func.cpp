@@ -13,7 +13,7 @@ MYSQL_FUNC::MYSQL_FUNC(std::string iP, std::string name, std::string passwd, std
 	get_local_plan_flag();
 	get_global_plan_flag();
 //	get_load_model();
-//	get_price();
+	get_price();
 }
 
 void MYSQL_FUNC::get_experimental_parameters()
@@ -243,42 +243,42 @@ void MYSQL_FUNC::get_varying_data()
 		float_result = mysql_lib->getArray_and_atof();
 		for (size_t i = 0; i < num_vr; i++)
 		{
-			varying_load[i].power_block[0] = float_result[i];	
+			varying_load[i].power_block[0].push_back(float_result[i]) ;	
 		}
 
 		mysql_lib->operate("SELECT power2 FROM load_list  WHERE group_id = '3' ");
 		float_result = mysql_lib->getArray_and_atof();
 		for (size_t i = 0; i < num_vr; i++)
 		{
-			varying_load[i].power_block[1] = float_result[i];	
+			varying_load[i].power_block[1].push_back(float_result[i]) ;	
 		}
 		
 		mysql_lib->operate("SELECT power3 FROM load_list  WHERE group_id = '3' ");
 		float_result = mysql_lib->getArray_and_atof();
 		for (size_t i = 0; i < num_vr; i++)
 		{
-			varying_load[i].power_block[2] = float_result[i];	
+			varying_load[i].power_block[2].push_back(float_result[i]) ;	
 		}
 
 		mysql_lib->operate("SELECT block1 FROM load_list  WHERE group_id = '3' ");
 		int_result = mysql_lib->getArray_and_atoi();
 		for (size_t i = 0; i < num_vr; i++)
 		{
-			varying_load[i].op_time_block[0] = int_result[i];	
+			varying_load[i].op_time_block[0].push_back(int_result[i]) ;	
 		}
 	
 		mysql_lib->operate("SELECT block2 FROM load_list  WHERE group_id = '3' ");
 		int_result = mysql_lib->getArray_and_atoi();
 		for (size_t i = 0; i < num_vr; i++)
 		{
-			varying_load[i].op_time_block[1] = int_result[i];	
+			varying_load[i].op_time_block[1].push_back(int_result[i]) ;	
 		}
 
 		mysql_lib->operate("SELECT block3 FROM load_list  WHERE group_id = '3' ");
 		int_result = mysql_lib->getArray_and_atoi();
 		for (size_t i = 0; i < num_vr; i++)
 		{
-			varying_load[i].op_time_block[2] = int_result[i];	
+			varying_load[i].op_time_block[2].push_back(int_result[i]) ;	
 		}
 
 		mysql_lib->operate("SELECT equip_name FROM load_list  WHERE group_id = '3' ");

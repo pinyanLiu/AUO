@@ -69,8 +69,8 @@ public:
             int operation_time;
             int remain_op_time;
             int already_op_time;
-            int op_time_block[3];
-            float power_block[3];
+            std::vector<int> op_time_block[3];
+            std::vector<float> power_block[3];
             bool started_flag;
             std::string equip_name;
         }VARYING_LOAD;
@@ -82,7 +82,7 @@ public:
     double **coefficient;
     int Total_Row;
     int Total_Col;
-    int coef_row_num = 0, bnd_row_num = 1;
+    int bnd_row_num = 1;
     int remain_timeblock;//time block - sample time
 
     void cal_remain_timeblock();
@@ -105,6 +105,9 @@ public:
     void set_uninterrupt_row();
     void set_varying_row();
 
+    //========= SET COEFFICIENT MATRIX  =====================//
+    void set_interrupt_coeff();
+
 
 
 public:
@@ -112,10 +115,10 @@ public:
     OPTIMIZE(MYSQL_FUNC::EXPERIMENTAL_PARAMETERS EP,MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF,MYSQL_FUNC::LOCAL_PLAN_FLAG LPF);
     ~OPTIMIZE();
     void set_variable_name(MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF,MYSQL_FUNC::LOCAL_PLAN_FLAG LPF);//push variable under each situation
-    void set_constraint_matrix(MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF);//set whole row,include balanced function and restricted function
+    void set_constraint_matrix(MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF,MYSQL_FUNC::LOCAL_PLAN_FLAG LPF);//set whole row data,include balanced function and restricted function
+    void set_row(MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF,MYSQL_FUNC::LOCAL_PLAN_FLAG LPF);//set whole row constraint
     void set_col(MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF,MYSQL_FUNC::LOCAL_PLAN_FLAG LPF);//set whole variable constraint
     void set_obj(MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF,std::vector<float> price);//set objective function
-    void set_cal_parm();//set the calculation method and parameter
     void outport_file();
     void get_IT(MYSQL_FUNC::INTERRUPT_LOAD* IT);//get interrupted load data from mysql_func
     void get_UT(MYSQL_FUNC::UNINTERRUPT_LOAD* UT);//get uninterrupted load data from mysql_func

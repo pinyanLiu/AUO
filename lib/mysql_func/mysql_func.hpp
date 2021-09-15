@@ -89,8 +89,8 @@ class MYSQL_FUNC
             int operation_time;
             int remain_op_time;
             int already_op_time;
-            int op_time_block[3];
-            float power_block[3];
+            std::vector<int> op_time_block[3];
+            std::vector<float> power_block[3];
             bool started_flag;
             std::string equip_name;
         }VARYING_LOAD;
