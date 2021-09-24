@@ -1,6 +1,6 @@
 #include "mysql_func.hpp"
 #include "optimization.hpp"
-
+#include "glpk.h"
 //#define DEBUG1
 using namespace std;
 int main(){
@@ -8,16 +8,19 @@ int main(){
 MYSQL_FUNC mysql_func("140.124.42.65","root", "fuzzy314", "Hems_lib");
 OPTIMIZE opt(mysql_func.ep,mysql_func.gpf,mysql_func.lpf);
 opt.get_IT(mysql_func.interrupt_load);
+
 opt.set_col(mysql_func.gpf,mysql_func.lpf);
 opt.set_obj(mysql_func.gpf,mysql_func.price);
 opt.set_row(mysql_func.gpf,mysql_func.lpf);
+
 opt.set_constraint_matrix(mysql_func.gpf,mysql_func.lpf);
+/*
 for (size_t i = 0; i < opt.variable_name.size(); i++)
 {
 	cout<<opt.variable_name[i]<<" ";
 }
 cout<<endl;
-
+*/
 opt.outport_file();
 
 
@@ -36,7 +39,6 @@ cout<<"max_power = "<<opt.interrupt_load[i].max_power<<" ";
 cout<<"equip_name = "<<opt.interrupt_load[i].equip_name;
 cout<<endl;
 }
-
 
 for (size_t i = 0; i < 2; i++)
 {

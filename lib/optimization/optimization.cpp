@@ -21,6 +21,7 @@ OPTIMIZE::OPTIMIZE(MYSQL_FUNC::EXPERIMENTAL_PARAMETERS EP,MYSQL_FUNC::GLOBAL_PLA
 	set_problem("GHEMS","min");
 	glp_add_rows(mip, Total_Row);
 	glp_add_cols(mip, Total_Col);
+	glp_create_index(mip);
 	//glp_create_index(mip);
 
 /*
@@ -163,6 +164,7 @@ void OPTIMIZE::set_constraint_matrix(MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF,MYSQL_FUNC
 {
 	if(LPF.interrupt)
 		{
+			std::cout<<"wtfffffffffffffffffffffffffffffffffuck"<<std::endl;
 			set_interrupt_coeff();
 		}
 /*
@@ -586,7 +588,7 @@ void OPTIMIZE::set_interrupt_row()
 {
 	for (int i = 0; i <ep.num_of_it_load ; i++)
 	{
-		glp_set_row_name(mip, bnd_row_num + i, ("interrupt_"+std::to_string(i+1)+" total op_time > remain_op_time(Qa)").c_str());
+		glp_set_row_name(mip, bnd_row_num + i,("interrupt_"+std::to_string(i+1)+"_total_op_time>remain_op_time(Qa)").c_str());
 		glp_set_row_bnds(mip, bnd_row_num + i, GLP_LO, interrupt_load[i].remain_op_time, 0.0);
 	}
 	bnd_row_num += ep.num_of_it_load;
@@ -596,7 +598,7 @@ void OPTIMIZE::set_uninterrupt_row()
 {
 	for (int i = 0; i <ep.num_of_it_load ; i++)
 	{
-		glp_set_row_name(mip, bnd_row_num + i, ("interrupt_"+std::to_string(i+1)+" total op_time > remain_op_time(Qa)").c_str());
+		glp_set_row_name(mip, bnd_row_num + i, ("interrupt_"+std::to_string(i+1)+"_total_op_time>remain_op_time(Qa)").c_str());
 		glp_set_row_bnds(mip, bnd_row_num + i, GLP_LO, interrupt_load[i].remain_op_time, 0.0);
 	}
 	
@@ -606,7 +608,7 @@ void OPTIMIZE::set_varying_row()
 {
 	for (int i = 0; i <ep.num_of_it_load ; i++)
 	{
-		glp_set_row_name(mip, bnd_row_num + i, ("interrupt_"+std::to_string(i+1)+" total op_time > remain_op_time(Qa)").c_str());
+		glp_set_row_name(mip, bnd_row_num + i, ("interrupt_"+std::to_string(i+1)+"_total_op_time>remain_op_time(Qa)").c_str());
 		glp_set_row_bnds(mip, bnd_row_num + i, GLP_LO, interrupt_load[i].remain_op_time, 0.0);
 	}
 	
@@ -614,6 +616,8 @@ void OPTIMIZE::set_varying_row()
 
 void OPTIMIZE::set_interrupt_coeff()
 {
+									printf("heeee ");
+
 	for (int h = 0; h < ep.num_of_it_load; h++)
 	{
 		if ((interrupt_load[h].end_time - ep.Global_next_simulate_timeblock) >= 0)
@@ -622,14 +626,17 @@ void OPTIMIZE::set_interrupt_coeff()
 			{
 				for (int i = (interrupt_load[h].start_time - ep.Global_next_simulate_timeblock); i <= (interrupt_load[h].end_time - ep.Global_next_simulate_timeblock); i++)
 				{
-					coefficient[glp_find_row(mip,("interrupt_"+std::to_string(h+1)+" total op_time > remain_op_time(Qa)").c_str())][i * num_of_variable + find_variableName_position( "interrupt" + std::to_string(h + 1))] = 1.0;
+	
+					coefficient[glp_find_row(mip,("interrupt_"+std::to_string(h+1)+"_total_op_time>remain_op_time(Qa)").c_str())][i * num_of_variable + find_variableName_position( "interrupt" + std::to_string(h + 1))] = 1.0;
 				}
 			}
 			else if ((interrupt_load[h].start_time - ep.Global_next_simulate_timeblock) < 0)
 			{
 				for (int i = 0; i <= (interrupt_load[h].end_time - ep.Global_next_simulate_timeblock); i++)
 				{
-					coefficient[glp_find_row(mip,("interrupt_"+std::to_string(h+1)+" total op_time > remain_op_time(Qa)").c_str())][i * num_of_variable + find_variableName_position( "interrupt" + std::to_string(h + 1))] = 1.0;
+									printf("h %d",h);
+
+					coefficient[glp_find_row(mip,("interrupt_"+std::to_string(h+1)+"_total_op_time>remain_op_time(Qa)").c_str())][i * num_of_variable + find_variableName_position( "interrupt" + std::to_string(h + 1))] = 1.0;
 				}
 			}
 		}
@@ -647,7 +654,7 @@ void OPTIMIZE::set_interrupt_coeff()
 
 void OPTIMIZE::outport_file()
 {
-	glp_write_lp(mip, NULL, "Hems_lib.txt");
+	glp_write_lp(mip, NULL, "not_Hems_lib.txt");
 }
 
 

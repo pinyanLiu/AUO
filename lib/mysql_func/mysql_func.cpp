@@ -12,6 +12,9 @@ MYSQL_FUNC::MYSQL_FUNC(std::string iP, std::string name, std::string passwd, std
 	get_experimental_parameters();
 	get_local_plan_flag();
 	get_global_plan_flag();
+	get_interrupt_data();
+//	get_uninterrupt_data();
+//	get_varying_data();
 //	get_load_model();
 	get_price();
 }
