@@ -14,6 +14,7 @@ OPTIMIZE::OPTIMIZE(MYSQL_FUNC::EXPERIMENTAL_PARAMETERS EP, MYSQL_FUNC::GLOBAL_PL
 	interrupt_load = new INTERRUPT_LOAD[ep.num_of_it_load];
 	uninterrupt_load = new UNINTERRUPT_LOAD[ep.num_of_ut_load];
 	varying_load = new VARYING_LOAD[ep.num_of_vr_load];
+	final_result = new Final_result;
 	coefficient = NEW2D(Total_Row, Total_Col, double);
 	bnd_row_num = 1;
 	//glpk part
@@ -21,14 +22,12 @@ OPTIMIZE::OPTIMIZE(MYSQL_FUNC::EXPERIMENTAL_PARAMETERS EP, MYSQL_FUNC::GLOBAL_PL
 	glp_add_rows(mip, Total_Row);
 	glp_add_cols(mip, Total_Col);
 	glp_create_index(mip);
+	//
+	final_result->IT_switch.resize(ep.num_of_it_load, std::vector<bool>(96));
+	final_result->UT_switch.resize(ep.num_of_ut_load, std::vector<bool>(96));
+	final_result->VR_switch.resize(ep.num_of_vr_load, std::vector<bool>(96));
 
-	/*
-	
-
-//construct glpk matrix
-
-
-*/
+	//construct glpk matrix
 }
 
 OPTIMIZE::~OPTIMIZE()
@@ -37,6 +36,7 @@ OPTIMIZE::~OPTIMIZE()
 	delete[] uninterrupt_load;
 	delete[] varying_load;
 	delete[] coefficient;
+	delete final_result;
 	glp_delete_prob(mip);
 }
 
@@ -48,17 +48,6 @@ void OPTIMIZE::set_problem(char *prob_name, char *extremum)
 		glp_set_obj_dir(mip, GLP_MAX);
 	else if (extremum == "min" || extremum == "MIN")
 		glp_set_obj_dir(mip, GLP_MIN);
-
-	glp_iocp parm;
-	glp_init_iocp(&parm);
-
-	if (ep.Global_next_simulate_timeblock == 0)
-		parm.tm_lim = 120000;
-	else
-		parm.tm_lim = 60000;
-
-	parm.presolve = GLP_ON;
-	parm.gmi_cuts = GLP_ON;
 }
 
 void OPTIMIZE::set_variable_name(MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF, MYSQL_FUNC::LOCAL_PLAN_FLAG LPF)
@@ -209,6 +198,22 @@ void OPTIMIZE::set_obj(MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF, std::vector<float> pric
 			glp_set_obj_coef(mip, (find_variableName_position("Pfct") + 1 + j * num_of_variable), Hydro_Price / Hydro_Cons * delta_T); //FC cost
 	*/
 	}
+}
+void OPTIMIZE::set_opt_parm()
+{
+	glp_iocp parm;
+	glp_init_iocp(&parm);
+	parm.tm_lim = 100000;
+	parm.presolve = GLP_ON;
+	parm.gmi_cuts = GLP_ON;
+	parm.fp_heur = GLP_ON;
+	parm.bt_tech = GLP_BT_BFS;
+	parm.br_tech = GLP_BR_PCH;
+	int err = glp_intopt(mip, &parm);
+}
+
+void OPTIMIZE::update_final_result()
+{
 }
 
 void OPTIMIZE::set_col(MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF, MYSQL_FUNC::LOCAL_PLAN_FLAG LPF)
@@ -502,7 +507,6 @@ void OPTIMIZE::IT_constrain()
 		glp_set_row_bnds(mip, bnd_row_num + i, GLP_LO, interrupt_load[i].remain_op_time, 0.0);
 	}
 	bnd_row_num += ep.num_of_it_load;
-
 	//coeff matrix
 	for (int h = 0; h < ep.num_of_it_load; h++)
 	{
@@ -524,29 +528,6 @@ void OPTIMIZE::IT_constrain()
 			}
 		}
 	}
-}
-
-void OPTIMIZE::set_uninterrupt_row()
-{
-}
-
-void OPTIMIZE::set_varying_row()
-{
-}
-
-void OPTIMIZE::set_interrupt_coeff()
-{
-}
-
-void OPTIMIZE::set_uninterrupt_coeff()
-{
-}
-void OPTIMIZE::set_varying_coeff()
-{
-}
-
-void OPTIMIZE::set_Pgrid_coeff()
-{
 }
 
 void OPTIMIZE::outport_file()

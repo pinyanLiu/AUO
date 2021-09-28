@@ -15,14 +15,12 @@ int main()
 	MYSQL_FUNC mysql_func("140.124.42.65", "root", "fuzzy314", "Hems_lib");
 	OPTIMIZE opt(mysql_func.ep, mysql_func.gpf, mysql_func.lpf);
 	opt.get_IT(mysql_func.interrupt_load);
-
 	opt.set_col(mysql_func.gpf, mysql_func.lpf);
 	opt.set_obj(mysql_func.gpf, mysql_func.price);
 	opt.set_situation(mysql_func.gpf, mysql_func.lpf);
 	opt.load_matrix();
-	double z = glp_mip_obj_val(opt.mip);
-	cout << "z = " << z << endl;
-
+	glp_iocp parm;
+	glp_init_iocp(&parm);
 	opt.outport_file();
 
 #ifdef IT
