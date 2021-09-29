@@ -212,8 +212,42 @@ void OPTIMIZE::set_opt_parm()
 	int err = glp_intopt(mip, &parm);
 }
 
-void OPTIMIZE::update_final_result()
+void OPTIMIZE::update_final_result(MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF, MYSQL_FUNC::LOCAL_PLAN_FLAG LPF)
 {
+	final_result->obj_result[ep.Global_next_simulate_timeblock].push_back(glp_mip_obj_val(mip));
+
+	if (LPF.interrupt)
+	{
+		for (int i = 0; i < ep.num_of_it_load; i++)
+		{
+			final_result->IT_switch[i][ep.Global_next_simulate_timeblock] = glp_mip_col_val(mip, find_variableName_position("interrupt" + std::to_string(i + 1)) + (num_of_variable * ep.Global_next_simulate_timeblock) + 1);
+		}
+	}
+	if (LPF.uninterrupt)
+	{
+	}
+	if (LPF.varying)
+	{
+	}
+	if (GPF.Pgrid == 1)
+		if (GPF.DR == 1)
+			if (GPF.Sell == 1)
+				if (GPF.Pess == 1)
+				{
+					if (GPF.SOC_change)
+					{
+					}
+				}
+
+	/*
+	if(GPF.Comfort){
+
+	}
+	*/
+
+	if (GPF.PV)
+	{
+	}
 }
 
 void OPTIMIZE::set_col(MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF, MYSQL_FUNC::LOCAL_PLAN_FLAG LPF)

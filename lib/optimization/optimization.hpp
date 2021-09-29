@@ -76,7 +76,7 @@ public:
 
     typedef struct
     {
-        std::vector<float> obj_result[96];
+        std::vector<double> obj_result[96];
         std::vector<float> P_grid[96];
         std::vector<std::vector<bool>> IT_switch;
         std::vector<std::vector<bool>> UT_switch;
@@ -91,12 +91,12 @@ public:
     void get_UT(MYSQL_FUNC::UNINTERRUPT_LOAD *UT); //get uninterrupted load data from mysql_func
     void get_VR(MYSQL_FUNC::VARYING_LOAD *VR);     //get varying load data from mysql_func
     void set_problem(char *prob_name, char *extremum);
-    void set_situation(MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF, MYSQL_FUNC::LOCAL_PLAN_FLAG LPF); //set whole row bounds and coeff matrix
-    void load_matrix();                                                                    //use glp_load_matrix() to load constraint matrix into glpk problem
-    void set_col(MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF, MYSQL_FUNC::LOCAL_PLAN_FLAG LPF);       //set whole variable constraint
-    void set_obj(MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF, std::vector<float> price);              //set objective function
-    void set_opt_parm();                                                                   //setting glpk optimization parameter
-    void update_final_result();                                                            //get answer and update final result struct
+    void set_situation(MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF, MYSQL_FUNC::LOCAL_PLAN_FLAG LPF);       //set whole row bounds and coeff matrix
+    void load_matrix();                                                                          //use glp_load_matrix() to load constraint matrix into glpk problem
+    void set_col(MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF, MYSQL_FUNC::LOCAL_PLAN_FLAG LPF);             //set whole variable constraint
+    void set_obj(MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF, std::vector<float> price);                    //set objective function
+    void set_opt_parm();                                                                         //setting glpk optimization parameter
+    void update_final_result(MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF, MYSQL_FUNC::LOCAL_PLAN_FLAG LPF); //get answer and update final result struct
     void outport_file();
     Final_result *final_result;
 

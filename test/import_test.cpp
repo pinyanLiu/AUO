@@ -8,6 +8,7 @@
 //#define VR
 //#define PRICE
 //#define LOAD_MODEL
+//#define IT_final_result
 using namespace std;
 int main()
 {
@@ -19,9 +20,17 @@ int main()
 	opt.set_obj(mysql_func.gpf, mysql_func.price);
 	opt.set_situation(mysql_func.gpf, mysql_func.lpf);
 	opt.load_matrix();
-	glp_iocp parm;
-	glp_init_iocp(&parm);
+	opt.set_opt_parm();
+	opt.update_final_result(mysql_func.gpf, mysql_func.lpf);
 	opt.outport_file();
+
+#ifdef IT_final_result
+	for (size_t i = 0; i < 12; i++)
+	{
+		cout << "IT = " << i + 1 << " " << opt.final_result->IT_switch[i][0] << " ";
+		cout << endl;
+	}
+#endif
 
 #ifdef IT
 
