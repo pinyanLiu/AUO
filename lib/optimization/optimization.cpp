@@ -250,6 +250,20 @@ void OPTIMIZE::update_final_result(MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF, MYSQL_FUNC:
 	}
 }
 
+void OPTIMIZE::update_experiment_parameter()
+{
+	for (int i = 0; i < ep.num_of_it_load; i++)
+	{
+		if (final_result->IT_switch[i][ep.Global_next_simulate_timeblock] == 1) //load is power up in this timeblock
+		{
+			interrupt_load[i].already_op_time++;
+			interrupt_load[i].remain_op_time--;
+		}
+	}
+
+	ep.Global_next_simulate_timeblock++; //move to next sample time;
+}
+
 void OPTIMIZE::set_col(MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF, MYSQL_FUNC::LOCAL_PLAN_FLAG LPF)
 {
 	if (LPF.interrupt)

@@ -97,8 +97,12 @@ public:
     void set_obj(MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF, std::vector<float> price);                    //set objective function
     void set_opt_parm();                                                                         //setting glpk optimization parameter
     void update_final_result(MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF, MYSQL_FUNC::LOCAL_PLAN_FLAG LPF); //get answer and update final result struct
+    void update_experiment_parameter();
     void outport_file();
     Final_result *final_result;
+    INTERRUPT_LOAD *interrupt_load;
+    UNINTERRUPT_LOAD *uninterrupt_load;
+    VARYING_LOAD *varying_load;
 
 private:
     void set_variable_name(MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF, MYSQL_FUNC::LOCAL_PLAN_FLAG LPF); //push variable under each situation
@@ -125,9 +129,6 @@ private:
     //find position tool
     int find_variableName_position(std::string target);
     //variables
-    INTERRUPT_LOAD *interrupt_load;
-    UNINTERRUPT_LOAD *uninterrupt_load;
-    VARYING_LOAD *varying_load;
 
     EXPERIMENTAL_PARAMETERS ep;
     glp_prob *mip;

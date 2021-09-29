@@ -22,7 +22,17 @@ int main()
 	opt.load_matrix();
 	opt.set_opt_parm();
 	opt.update_final_result(mysql_func.gpf, mysql_func.lpf);
+	opt.update_experiment_parameter();
 	opt.outport_file();
+
+	for (size_t i = 0; i < 12; i++)
+	{
+		cout << "IT" << i + 1 << " already operation time =" << opt.interrupt_load[i].already_op_time << " " << endl;
+	}
+	for (size_t i = 0; i < 12; i++)
+	{
+		cout << "IT" << i + 1 << " remain operation time =" << opt.interrupt_load[i].remain_op_time << " " << endl;
+	}
 
 #ifdef IT_final_result
 	for (size_t i = 0; i < 12; i++)
