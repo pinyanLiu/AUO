@@ -9,7 +9,7 @@
 #include <vector>
 #include <algorithm>
 #include <charconv>
-
+#include <cstring>
 class OPTIMIZE
 {
 public:
@@ -98,11 +98,16 @@ public:
     void set_opt_parm();                                                                         //setting glpk optimization parameter
     void update_final_result(MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF, MYSQL_FUNC::LOCAL_PLAN_FLAG LPF); //get answer and update final result struct
     void update_experiment_parameter();
+    void reset_problem();
+    void delete_prob();
+    void reset_coeff_matrix();
     void outport_file();
     Final_result *final_result;
     INTERRUPT_LOAD *interrupt_load;
     UNINTERRUPT_LOAD *uninterrupt_load;
     VARYING_LOAD *varying_load;
+    EXPERIMENTAL_PARAMETERS ep;
+    int err; //error output from glp_intopt()
 
 private:
     void set_variable_name(MYSQL_FUNC::GLOBAL_PLAN_FLAG GPF, MYSQL_FUNC::LOCAL_PLAN_FLAG LPF); //push variable under each situation
@@ -130,11 +135,10 @@ private:
     int find_variableName_position(std::string target);
     //variables
 
-    EXPERIMENTAL_PARAMETERS ep;
     glp_prob *mip;
     std::vector<std::string> variable_name;
     int num_of_variable;
-    double **coefficient;
+    std::vector<std::vector<double>> coefficient;
     int Total_Row;
     int Total_Col;
     int bnd_row_num = 1;
