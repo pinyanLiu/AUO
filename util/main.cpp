@@ -33,6 +33,8 @@ int main()
             return 0;
         }
         opt.delete_prob();
+        if (opt.ep.Global_next_simulate_timeblock == 95)
+            break;
         opt.reset_coeff_matrix();
         opt.update_experiment_parameter();
         opt.reset_problem();
